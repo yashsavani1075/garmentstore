@@ -1,0 +1,149 @@
+/* MyOrders.css */
+
+.my-orders-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+  min-height: 70vh;
+}
+
+.my-orders-container h1 {
+  font-size: 2.2rem;
+  color: #222;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.no-orders {
+  background: #fff;
+  border-radius: 12px;
+  padding: 50px 30px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.no-orders p {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.no-orders a {
+  display: inline-block;
+  text-decoration: none;
+  background: #222;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.no-orders a:hover {
+  background: #444;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.order-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+  border: 1px solid #ececec;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.order-header h3 {
+  color: #222;
+  margin-bottom: 5px;
+}
+
+.order-header p {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.order-status {
+  background: #fff4d6;
+  color: #b7791f;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.order-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 15px;
+  align-items: center;
+  padding: 14px 18px;
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+.order-item span:first-child {
+  font-weight: 600;
+  color: #333;
+}
+
+.order-item span:not(:first-child) {
+  color: #666;
+  text-align: center;
+}
+
+.order-total {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid #eee;
+  text-align: right;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #222;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .my-orders-container {
+    padding: 15px;
+  }
+
+  .order-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .order-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    text-align: left;
+  }
+
+  .order-item span:not(:first-child) {
+    text-align: left;
+  }
+
+  .order-total {
+    text-align: left;
+  }
+}

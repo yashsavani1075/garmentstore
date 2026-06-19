@@ -1,0 +1,105 @@
+.category-section {
+  background: #f7f7f7;
+  padding: 30px 0;
+
+}
+
+.category-grid {
+  display: flex;
+  justify-content: center;  
+  gap: 30px;          
+}
+
+.category-cardg {
+  width: 360px;          
+  height: 255px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.category-cardg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.category-overlay {
+  position: absolute;
+  left: 47%;
+  top: 57%;
+  transform: translate(-50%, -50%);
+}
+
+.category-overlay button {
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid #710400;
+  color: #710400;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  padding: 0 0 8px;
+  cursor: pointer;
+  /* line-height: 20px; */
+}
+
+.category-overlay button:hover {
+  color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+/* Separate positioning for each card, because apparently every image wants special treatment */
+.men-card .category-overlay {
+  left: 70%;
+  top: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-end;
+  /* justify-content: right; */
+}
+
+.women-card .category-overlay {
+  left: 31%;
+  top: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.kids-card .category-overlay {
+  left: 31%;
+  top: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.Title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--primary-hover);
+}
+
+.category-cardg:hover img{
+  transform: scale(1.09);
+  /* inset: 0; */
+}
+
+@media (max-width: 900px) {
+  .category-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .category-cardg {
+    height: 260px;
+  }
+}

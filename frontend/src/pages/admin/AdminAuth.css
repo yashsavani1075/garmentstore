@@ -1,0 +1,97 @@
+/* Full page background */
+.admin-auth-container {
+  min-height: 100vh;
+  /* margin-left: 250px; Same as sidebar width, remove if no sidebar */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f4f6f9;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+/* Form card */
+.admin-auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Heading */
+.admin-auth-card h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #222;
+  font-size: 28px;
+}
+
+/* Form */
+.admin-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Labels */
+.admin-auth-form label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+}
+
+/* Inputs */
+.admin-auth-form input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-top: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.admin-auth-form input:focus {
+  border-color: #710400;
+  /* box-shadow: 0 0 0 3px #710400; */
+}
+
+/* Button */
+.admin-auth-btn {
+  margin-top: 10px;
+  padding: 13px;
+  background: #710400;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.admin-auth-btn:hover {
+  background: #001454;
+}
+
+/* Bottom text */
+.admin-auth-footer {
+  margin-top: 20px;
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+}
+
+.admin-auth-footer a {
+  color: #000000;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.admin-auth-footer a:hover {
+  text-decoration: underline;
+}

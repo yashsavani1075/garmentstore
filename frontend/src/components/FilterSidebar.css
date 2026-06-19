@@ -1,0 +1,289 @@
+/* ─────────────────────────────────────────────────────────────────
+   FilterSidebar  —  clean, no inner-scroll design
+───────────────────────────────────────────────────────────────── */
+
+/* ── Page-level layout ──────────────────────────────────────────── */
+.shop-layout {
+  display: flex;
+  gap: 0;
+  align-items: flex-start;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+  width: 100%;
+}
+
+/* ── Sidebar — NO internal scroll ───────────────────────────────── */
+.filter-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 22px 16px;
+  position: sticky;
+  top: 80px;           /* sticks just below navbar */
+  align-self: flex-start;   /* crucial — doesn't stretch to grid height */
+  box-shadow: 0 4px 24px rgba(79, 70, 229, 0.07);
+  /* NO overflow, NO max-height → sidebar never scrolls */
+}
+
+/* ── Header row ──────────────────────────────────────────────────── */
+.filter-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #eef2ff;
+}
+
+.filter-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.filter-icon {
+  font-size: 1rem;
+  color: #4f46e5;
+}
+
+.active-filter-count {
+  background: #4f46e5;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-all-btn {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ef4444;
+  background: #fff1f2;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.clear-all-btn:hover { background: #ffe4e6; }
+
+/* ── Section accordion ───────────────────────────────────────────── */
+.filter-section {
+  border-bottom: 1px solid #f1f5f9;
+}
+.filter-section:last-child { border-bottom: none; }
+
+.filter-section-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 11px 2px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1e293b;
+  transition: color 0.2s;
+}
+.filter-section-header:hover { color: #4f46e5; }
+
+.chevron {
+  font-size: 1.1rem;
+  transition: transform 0.25s ease;
+  display: inline-block;
+}
+.chevron.open { transform: rotate(90deg); }
+
+.filter-section-body {
+  padding: 2px 2px 12px;
+  animation: fadeSlide 0.18s ease;
+}
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Price / subcategory / fabric chips ──────────────────────────── */
+.filter-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.filter-chip {
+  width: 100%;
+  text-align: left;
+  padding: 7px 12px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 9px;
+  background: transparent;
+  font-size: 0.81rem;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.filter-chip:hover {
+  border-color: #a5b4fc;
+  color: #4f46e5;
+  background: #eef2ff;
+}
+.filter-chip.active {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── Color swatches ──────────────────────────────────────────────── */
+.color-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 2px 2px;
+}
+
+.color-filter-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1.5px #cbd5e1;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s;
+  background: none;
+  padding: 0;
+}
+.color-filter-swatch:hover { transform: scale(1.15); }
+.color-filter-swatch.active {
+  box-shadow: 0 0 0 3px #4f46e5;
+  transform: scale(1.18);
+}
+
+/* ── Size chips ──────────────────────────────────────────────────── */
+.size-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 2px 2px;
+}
+
+.size-filter-chip {
+  padding: 5px 13px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.size-filter-chip:hover {
+  border-color: #a5b4fc;
+  color: #4f46e5;
+  background: #eef2ff;
+}
+.size-filter-chip.active {
+  background: #111827;
+  border-color: #111827;
+  color: #fff;
+}
+
+/* ── Product area ────────────────────────────────────────────────── */
+.shop-products {
+  flex: 1;
+  min-width: 0;
+  padding-left: 28px;
+}
+
+.shop-results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.shop-results-count {
+  font-size: 0.88rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-left: 45px;
+}
+
+/* ── Mobile filter toggle ────────────────────────────────────────── */
+.mobile-filter-toggle {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 18px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-left: 25px;
+}
+.mobile-filter-toggle:hover { background: #4338ca; }
+
+/* ── Mobile drawer ───────────────────────────────────────────────── */
+.mobile-sidebar-overlay { display: none; }
+
+@media (max-width: 900px) {
+  .shop-layout { flex-direction: column; padding: 16px 14px 40px; }
+
+  /* Sidebar becomes an off-canvas drawer */
+  .filter-sidebar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 290px;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow-y: auto;       /* only on mobile drawer */
+    border-radius: 0 18px 18px 0;
+    z-index: 1000;
+    box-shadow: 4px 0 32px rgba(0,0,0,0.18);
+    scrollbar-width: thin;
+    scrollbar-color: #c7d2fe transparent;
+  }
+  .filter-sidebar.mobile-open { display: block; }
+
+  .mobile-sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.38);
+    z-index: 999;
+    backdrop-filter: blur(2px);
+  }
+  .mobile-sidebar-overlay.visible { display: block; }
+
+  .mobile-filter-toggle { display: flex; }
+
+  .shop-products { padding-left: 0; }
+}

@@ -1,0 +1,31 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.admin-main {
+  flex: 1;
+  margin-left: 260px; /* Must match Sidebar width */
+  padding: 30px;
+  padding-top: 80px;
+  min-height: 100vh;
+  overflow-x: auto;
+  background: #f8fafc;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .admin-main {
+    margin-left: 260px;
+    padding: 20px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .admin-main {
+    margin-left: 220px; /* Match mobile sidebar width if you changed it */
+    padding: 15px;
+  }
+}

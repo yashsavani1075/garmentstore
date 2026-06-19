@@ -1,0 +1,148 @@
+.admin-promos {
+  padding: 30px;
+  background: #f6f3ef;
+  min-height: 100vh;
+}
+
+.admin-promos h2 {
+  margin-bottom: 25px;
+  color: #2f3e5c;
+  font-size: 28px;
+}
+
+.promo-form {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin-bottom: 35px;
+}
+
+.promo-form input,
+.promo-form select {
+  padding: 13px 14px;
+  border: 1px solid #d2c4b4;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  background: #fff;
+}
+
+.promo-form input:focus,
+.promo-form select:focus {
+  border-color: #2f3e5c;
+}
+
+.promo-form label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #2f3e5c;
+  font-weight: 500;
+}
+
+.promo-form input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.promo-form button {
+  padding: 13px;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary-hover);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.promo-form button:hover {
+  background: var(--primary-color);
+}
+
+.promo-form button[type="button"] {
+  background: var(--primary-hover);
+}
+
+.promo-form button[type="button"]:hover {
+  background: var(--primary-color);
+}
+
+.promo-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+.promo-card {
+  background: #ffffff;
+  padding: 22px;
+  border-radius: 14px;
+  border-left: 5px solid #2f3e5c;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+  transition: 0.25s ease;
+}
+
+.promo-card:hover {
+  transform: translateY(-4px);
+}
+
+.promo-card h3 {
+  color: #2f3e5c;
+  font-size: 22px;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.promo-card p {
+  color: #4d4d4d;
+  font-size: 15px;
+  margin: 8px 0;
+}
+
+.promo-card button {
+  margin-top: 14px;
+  margin-right: 10px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 7px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.promo-card button:first-of-type {
+  background: var(--primary-hover);
+}
+
+.promo-card button:first-of-type:hover {
+  background: #1f2b42;
+}
+
+.promo-card button:last-of-type {
+  background: #710400;
+}
+
+.promo-card button:last-of-type:hover {
+  background: #8f2d2d;
+}
+
+@media (max-width: 768px) {
+  .admin-promos {
+    padding: 18px;
+  }
+
+  .promo-form {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-promos h2 {
+    font-size: 24px;
+  }
+}
