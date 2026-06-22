@@ -71,7 +71,7 @@ function getSelectedProduct(products, position) {
 
 exports.askAI = async (req, res) => {
   try {
-    const { message, lastProducts = [] } = req.body;
+    const { message, lastProducts = [], currentFilters = {} } = req.body;
 
     if (!message || !message.trim()) {
       return res.status(400).json({
@@ -80,9 +80,44 @@ exports.askAI = async (req, res) => {
       });
     }
 
-    const filters = await extractFiltersWithAI(message);
-    // console.log("USER MESSAGE:", message);
-    // console.log("AI FILTERS:", filters);
+    const newFilters = await extractFiltersWithAI(message);
+    console.log("USER MESSAGE:", message);
+    console.log("AI NEW FILTERS:", newFilters);
+
+    if (newFilters.intent === "RESET") {
+      return res.status(200).json({
+        success: true,
+        reply: "Memory cleared. What would you like to search next?",
+        filters: {},
+        count: 0,
+        products: [],
+        action: "RESET",
+      });
+    }
+
+    if (newFilters.intent === "INVALID_PROMPT") {
+      return res.status(200).json({
+        success: true,
+        reply: "enter valid prompt",
+        filters: currentFilters,
+        count: 0,
+        products: [],
+        action: "INVALID_PROMPT",
+      });
+    }
+
+    const mergedFilters = { ...currentFilters };
+    Object.keys(newFilters).forEach((key) => {
+      if (newFilters[key] !== null) {
+        mergedFilters[key] = newFilters[key];
+      }
+    });
+
+    mergedFilters.intent = newFilters.intent;
+    mergedFilters.productPosition = newFilters.productPosition;
+
+    const filters = mergedFilters;
+    console.log("MERGED FILTERS:", filters);
 
     if (filters.intent === "VIEW_PRODUCT" && lastProducts.length > 0) {
       const selectedProduct = getSelectedProduct(
@@ -125,8 +160,10 @@ exports.askAI = async (req, res) => {
       });
     }
 
+
+
     const query = buildMongoQuery(filters);
-    // console.log("MONGO QUERY:", query);
+    console.log("MONGO QUERY:", query);
     const sortOption = getSortOption(filters.sort);
 
     const productsFromDB = await Garment.find(query)

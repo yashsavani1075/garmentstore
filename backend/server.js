@@ -19,6 +19,7 @@ const paymentRoutes = require("./routes/paymentRoutes");
 const userRoutes = require("./routes/userRoutes");
 const promoRoutes = require("./routes/promoRoutes");
 const aiRoutes = require("./routes/aiRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 connectDB();
 createDefaultConfig();
@@ -40,6 +41,7 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/promos", promoRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/admin/dashboard", dashboardRoutes);
 
 app.listen(PORT, () => {
   console.log(

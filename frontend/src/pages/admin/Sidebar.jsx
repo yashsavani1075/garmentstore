@@ -10,6 +10,13 @@ export default function Sidebar({
       <h2>Admin Panel</h2>
 
       <button
+        className={activePage === "dashboard" ? "active" : ""}
+        onClick={() => setActivePage("dashboard")}
+      >
+        Dashboard
+      </button>
+
+      <button
         className={activePage === "add-product" ? "active" : ""}
         onClick={() => setActivePage("add-product")}
       >
@@ -22,14 +29,6 @@ export default function Sidebar({
       >
         Product Config
       </button>
-
-      <button
-        className={activePage === "admin-promos" ? "active" : ""}
-        onClick={() => setActivePage("admin-promos")}
-      >
-        Promo Codes
-      </button>
-
       <button
         className={activePage === "show-products" ? "active" : ""}
         onClick={() => setActivePage("show-products")}
@@ -42,6 +41,12 @@ export default function Sidebar({
         onClick={() => setActivePage("orders")}
       >
         Orders
+      </button>
+      <button
+        className={activePage === "admin-promos" ? "active" : ""}
+        onClick={() => setActivePage("admin-promos")}
+      >
+        Promo Codes
       </button>
     </div>
   );

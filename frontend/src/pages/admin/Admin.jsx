@@ -5,14 +5,18 @@ import ShowProducts from "./ShowProducts";
 import Orders from "./Orders";
 import AdminConfig from "./AdminConfig";
 import Promos from "./Promos";
+import Dashboard from "./Dashboard";
 import AdminNavbar from "../../components/admin/AdminNavbar";
 import "./Admin.css";
 
 export default function Admin() {
-  const [activePage, setActivePage] = useState("add-product");
+  const [activePage, setActivePage] = useState("dashboard");
 
   const renderPage = () => {
   switch (activePage) {
+    case "dashboard":
+      return <Dashboard />;
+
     case "admin-config":
       return <AdminConfig />;
 
@@ -29,7 +33,7 @@ export default function Admin() {
       return <Promos />;
 
     default:
-      return <AddProduct />;
+      return <Dashboard />;
   }
 };
 

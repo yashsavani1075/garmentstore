@@ -5,9 +5,16 @@ import "./AiChat.css";
 export default function AiChat() {
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState("");
-    const [chats, setChats] = useState([]);
+    const [chats, setChats] = useState([
+        {
+            sender: "bot",
+            text:
+                "✨ Welcome to GarmentStore\n\nTell me what you're looking for and I'll find the best matches.",
+        },
+    ]);
     const [loading, setLoading] = useState(false);
     const [lastProducts, setLastProducts] = useState([]);
+    const [currentFilters, setCurrentFilters] = useState({});
 
     const navigate = useNavigate();
 
@@ -33,10 +40,18 @@ export default function AiChat() {
                 body: JSON.stringify({
                     message: userMessage,
                     lastProducts,
+                    currentFilters,
                 }),
             });
 
             const data = await res.json();
+
+            if (data.action === "RESET") {
+                setCurrentFilters({});
+                setLastProducts([]);
+            } else if (data.filters) {
+                setCurrentFilters(data.filters);
+            }
 
             if (data.products) {
                 setLastProducts(data.products);

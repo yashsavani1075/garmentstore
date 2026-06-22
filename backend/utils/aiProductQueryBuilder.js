@@ -1,25 +1,75 @@
+function escapeRegex(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function buildMongoQuery(filters = {}) {
   const query = {};
 
+  if (filters.intent === "INVALID_PROMPT") {
+    return { _id: null };
+  }
+
   if (filters.category) {
-    query.category = new RegExp(`^${filters.category}$`, "i");
+    query.category = new RegExp(`^${escapeRegex(filters.category)}$`, "i");
   }
 
   if (filters.subCategory) {
-    query.subCategory = new RegExp(filters.subCategory, "i");
+    query.subCategory = new RegExp(escapeRegex(filters.subCategory), "i");
   }
 
   if (filters.fabric) {
-    query.fabric = new RegExp(filters.fabric, "i");
+    query.fabric = new RegExp(escapeRegex(filters.fabric), "i");
+  }
+
+  if (filters.size) {
+    const sizeRegex = new RegExp(`^${escapeRegex(filters.size)}$`, "i");
+
+    query.$and = query.$and || [];
+    query.$and.push({
+      $or: [
+        { sizes: sizeRegex },
+        { "sizePrices.size": sizeRegex },
+      ],
+    });
   }
 
   if (filters.color) {
-    query.$or = [
-      { color: new RegExp(filters.color, "i") },
-      { colorName: new RegExp(filters.color, "i") },
-      { "colorVariants.colorName": new RegExp(filters.color, "i") },
-      { "colorVariants.colorCode": new RegExp(filters.color, "i") },
+    const colorRegex = new RegExp(escapeRegex(filters.color), "i");
+
+    const colorConditions = [
+      { title: colorRegex },
+      { color: colorRegex },
+      { colorName: colorRegex },
+      { "colorVariants.colorName": colorRegex },
+      { "colorVariants.colorCode": colorRegex },
     ];
+
+    if (query.$and) {
+      query.$and.push({ $or: colorConditions });
+    } else {
+      query.$or = colorConditions;
+    }
+  }
+
+  if (filters.searchTerm) {
+    const searchRegex = new RegExp(escapeRegex(filters.searchTerm), "i");
+
+    const searchConditions = [
+      { title: searchRegex },
+      { category: searchRegex },
+      { subCategory: searchRegex },
+      { fabric: searchRegex },
+    ];
+
+    if (query.$or) {
+      query.$and = query.$and || [];
+      query.$and.push({ $or: query.$or });
+      query.$and.push({ $or: searchConditions });
+      delete query.$or;
+    } else {
+      query.$and = query.$and || [];
+      query.$and.push({ $or: searchConditions });
+    }
   }
 
   if (filters.minPrice || filters.maxPrice) {

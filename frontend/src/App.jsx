@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Admin from "./pages/admin/Admin";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminSignup from "./pages/admin/AdminSignup";
+import Dashboard from "./pages/admin/Dashboard";
 import MyOrders from "./pages/MyOrders";
 import NewArrival from "./pages/NewArrival";
 import Men from "./pages/Men";
@@ -54,6 +55,7 @@ function Layout() {
         />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/signup" element={<AdminSignup />} />
+        <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/new-arrival" element={<NewArrival />} />
         <Route path="/male" element={<Men />} />
         <Route path="/male/:subCategory" element={<Men />} />
