@@ -213,3 +213,21 @@
 .remove-promo-btn:hover {
   background: var(--primary-hover) !important;
 }
+
+@media (max-width: 480px) {
+  .checkout-page {
+    padding: 10px;
+  }
+  .checkout-form, .checkout-summary {
+    padding: 15px;
+  }
+  .checkout-total {
+    font-size: 1.1rem;
+  }
+  .promo-box {
+    flex-direction: column;
+  }
+  .promo-box .btn {
+    width: 100%;
+  }
+}

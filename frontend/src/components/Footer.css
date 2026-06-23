@@ -42,3 +42,11 @@
   padding: 1rem;
   color: #9ca3af;
 }
+
+@media (max-width: 480px) {
+  .footer-container {
+    padding: 2rem 1rem;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}

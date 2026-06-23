@@ -22,13 +22,13 @@
   font-size: 1.1rem;
 }
 
-.form-card {
+/* .form-card {
   background: var(--surface-color);
   border-radius: 20px;
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
   padding: 40px;
   border: 1px solid var(--border-color);
-}
+} */
 
 .garment-form {
   display: flex;
