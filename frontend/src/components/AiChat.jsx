@@ -9,7 +9,7 @@ export default function AiChat() {
         {
             sender: "bot",
             text:
-                "✨ Welcome to GarmentStore\n\nTell me what you're looking for and I'll find the best matches.",
+                "✨ Welcome to GarmentStore\n\nTell me what you're looking for and I'll find the best matches.\n\nPlease type \"Reset\" for reset context",
         },
     ]);
     const [loading, setLoading] = useState(false);
