@@ -1,19 +1,29 @@
 const Wishlist = require("../models/Wishlist");
 
+const formatWishlist = async (wishlist) => {
+  if (!wishlist) return [];
+
+  await wishlist.populate("items.garment");
+
+  return wishlist.items
+    .filter((item) => item.garment)
+    .map((item) => ({
+      _id: item.garment._id,
+      garment: item.garment,
+      size: item.size,
+      selectedColorName: item.selectedColorName,
+      selectedColorCode: item.selectedColorCode,
+      imageUrl: item.imageUrl,
+    }));
+};
+
 exports.getWishlist = async (req, res) => {
   try {
     const { userEmail } = req.params;
 
-    const wishlist = await Wishlist.findOne({ userEmail }).populate("garments");
+    const wishlist = await Wishlist.findOne({ userEmail });
 
-    if (!wishlist) {
-      return res.json([]);
-    }
-
-    const formattedWishlist = wishlist.garments.map((garment) => ({
-      _id: garment._id,
-      garment,
-    }));
+    const formattedWishlist = await formatWishlist(wishlist);
 
     res.json(formattedWishlist);
   } catch (error) {
@@ -23,7 +33,14 @@ exports.getWishlist = async (req, res) => {
 
 exports.toggleWishlist = async (req, res) => {
   try {
-    const { userEmail, garmentId } = req.body;
+    const {
+      userEmail,
+      garmentId,
+      size,
+      selectedColorName,
+      selectedColorCode,
+      imageUrl,
+    } = req.body;
 
     if (!userEmail || !garmentId) {
       return res.status(400).json({ message: "Missing wishlist details" });
@@ -34,33 +51,43 @@ exports.toggleWishlist = async (req, res) => {
     if (!wishlist) {
       wishlist = await Wishlist.create({
         userEmail,
-        garments: [],
+        items: [],
       });
     }
 
-    const alreadyExists = wishlist.garments.some(
-      (id) => id.toString() === garmentId
+    const existingItem = wishlist.items.find(
+      (item) =>
+        item.garment.toString() === garmentId &&
+        item.size === size &&
+        (item.selectedColorCode || "") === (selectedColorCode || ""),
     );
 
     let added = false;
 
-    if (alreadyExists) {
-      wishlist.garments = wishlist.garments.filter(
-        (id) => id.toString() !== garmentId
+    if (existingItem) {
+      wishlist.items = wishlist.items.filter(
+        (item) =>
+          !(
+            item.garment.toString() === garmentId &&
+            item.size === size &&
+            (item.selectedColorCode || "") === (selectedColorCode || "")
+          ),
       );
     } else {
-      wishlist.garments.push(garmentId);
+      wishlist.items.push({
+        garment: garmentId,
+        size,
+        selectedColorName,
+        selectedColorCode,
+        imageUrl,
+      });
+
       added = true;
     }
 
     await wishlist.save();
 
-    await wishlist.populate("garments");
-
-    const formattedWishlist = wishlist.garments.map((garment) => ({
-      _id: garment._id,
-      garment,
-    }));
+    const formattedWishlist = await formatWishlist(wishlist);
 
     res.json({
       added,
@@ -76,10 +103,7 @@ exports.clearWishlist = async (req, res) => {
   try {
     const { userEmail } = req.params;
 
-    await Wishlist.findOneAndUpdate(
-      { userEmail },
-      { garments: [] }
-    );
+    await Wishlist.findOneAndUpdate({ userEmail }, { items: [] });
 
     res.json([]);
   } catch (error) {

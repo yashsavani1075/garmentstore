@@ -232,14 +232,37 @@ export default function ProductDetails() {
                     </div>
 
                     <div className="product-actions">
-                        <button className="add-cart-btn" onClick={() => AddTocart(product)}>
+                        <button
+                            className="add-cart-btn"
+                            onClick={() => AddTocart(product)}
+                        >
                             Add To Cart
                         </button>
 
                         <button
-                            className={`wishlist-btn-detail ${isWishlisted(product._id) ? "active" : ""
+                            className={`wishlist-btn-detail ${isWishlisted(
+                                product._id,
+                                selectedSize,
+                                selectedColor?.colorCode || product.color
+                            )
+                                    ? "active"
+                                    : ""
                                 }`}
-                            onClick={() => toggleWishlist(product._id)}
+                            onClick={() =>
+                                toggleWishlist({
+                                    garmentId: product._id,
+                                    size: selectedSize,
+                                    selectedColorName:
+                                        selectedColor?.colorName || "",
+                                    selectedColorCode:
+                                        selectedColor?.colorCode || product.color,
+                                    imageUrl:
+                                        mainImage ||
+                                        selectedColor?.images?.[0] ||
+                                        selectedColor?.imageUrl ||
+                                        product.imageUrl,
+                                })
+                            }
                         >
                             ♥
                         </button>

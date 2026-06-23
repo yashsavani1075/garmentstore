@@ -170,13 +170,33 @@ export default function Shopby() {
                         >
 
                           <button
-                            className="wishlist-heart-btn"
+                            className={`wishlist-heart-btn ${isWishlisted(
+                              garment._id,
+                              selectedSize,
+                              displayColor
+                            )
+                                ? "active"
+                                : ""
+                              }`}
                             onClick={(e) => {
                               e.stopPropagation();
-                              toggleWishlist(garment._id);
+
+                              const selectedSize = selectedSizes[garment._id];
+                              const selectedColor = selectedColors[garment._id];
+
+                              toggleWishlist({
+                                garmentId: garment._id,
+                                size: selectedSize,
+                                selectedColorName: selectedColor?.colorName || "",
+                                selectedColorCode: selectedColor?.colorCode || garment.color,
+                                imageUrl:
+                                  selectedColor?.images?.[0] ||
+                                  selectedColor?.imageUrl ||
+                                  garment.imageUrl,
+                              });
                             }}
                           >
-                            {isWishlisted(garment._id) ? "❤️" : "🤍"}
+                            ♥
                           </button>
                       {displayImage ? (
                         <img

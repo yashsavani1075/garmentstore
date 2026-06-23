@@ -1,5 +1,20 @@
 const mongoose = require("mongoose");
 
+const wishlistItemSchema = new mongoose.Schema(
+  {
+    garment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Garment",
+      required: true,
+    },
+    size: String,
+    selectedColorName: String,
+    selectedColorCode: String,
+    imageUrl: String,
+  },
+  { _id: false }
+);
+
 const wishlistSchema = new mongoose.Schema(
   {
     userEmail: {
@@ -7,13 +22,7 @@ const wishlistSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-
-    garments: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Garment",
-      },
-    ],
+    items: [wishlistItemSchema],
   },
   { timestamps: true }
 );

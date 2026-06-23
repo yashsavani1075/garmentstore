@@ -8,110 +8,122 @@ export const useWishlist = () => useContext(WishlistContext);
 const API = "http://localhost:5000/api/wishlist";
 
 const getCurrentUser = () => {
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
 };
 
 export function WishlistProvider({ children }) {
-  const [wishlist, setWishlist] = useState([]);
+    const [wishlist, setWishlist] = useState([]);
 
-  const getUserEmail = () => {
-    const user = getCurrentUser();
-    return user?.email;
-  };
+    const getUserEmail = () => {
+        const user = getCurrentUser();
+        return user?.email;
+    };
 
-  const fetchWishlist = async () => {
-    const userEmail = getUserEmail();
+    const fetchWishlist = async () => {
+        const userEmail = getUserEmail();
 
-    if (!userEmail) {
-      setWishlist([]);
-      return;
-    }
+        if (!userEmail) {
+            setWishlist([]);
+            return;
+        }
 
-    try {
-      const res = await fetch(`${API}/${userEmail}`);
-      const data = await res.json();
+        try {
+            const res = await fetch(`${API}/${userEmail}`);
+            const data = await res.json();
 
-      setWishlist(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error(error);
-      setWishlist([]);
-    }
-  };
+            setWishlist(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error(error);
+            setWishlist([]);
+        }
+    };
 
-  const toggleWishlist = async (garmentId) => {
-    const userEmail = getUserEmail();
+    const toggleWishlist = async (wishlistItem) => {
+        const userEmail = getUserEmail();
 
-    if (!userEmail) {
-      toast.error("Please login first");
-      return;
-    }
+        if (!userEmail) {
+            toast.error("Please login first");
+            return;
+        }
 
-    try {
-      const res = await fetch(`${API}/toggle`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userEmail,
-          garmentId,
-        }),
-      });
+        const isOnlyId = typeof wishlistItem === "string";
 
-      const data = await res.json();
+        const garmentId = isOnlyId ? wishlistItem : wishlistItem.garmentId;
 
-      if (!res.ok) {
-        toast.error(data.message || "Wishlist update failed");
-        return;
-      }
+        try {
+            const res = await fetch(`${API}/toggle`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userEmail,
+                    garmentId,
+                    size: isOnlyId ? "" : wishlistItem.size || "",
+                    selectedColorName: isOnlyId ? "" : wishlistItem.selectedColorName || "",
+                    selectedColorCode: isOnlyId ? "" : wishlistItem.selectedColorCode || "",
+                    imageUrl: isOnlyId ? "" : wishlistItem.imageUrl || "",
+                }),
+            });
 
-      setWishlist(Array.isArray(data.wishlist) ? data.wishlist : []);
+            const data = await res.json();
 
-      toast.success(data.message);
-    } catch (error) {
-      console.error(error);
-      toast.error("Wishlist update failed");
-    }
-  };
+            if (!res.ok) {
+                toast.error(data.message || "Wishlist update failed");
+                return;
+            }
 
-  const clearWishlist = async () => {
-    const userEmail = getUserEmail();
+            setWishlist(Array.isArray(data.wishlist) ? data.wishlist : []);
+            toast.success(data.message);
+        } catch (error) {
+            console.error(error);
+            toast.error("Wishlist update failed");
+        }
+    };
 
-    if (!userEmail) return;
+    const clearWishlist = async () => {
+        const userEmail = getUserEmail();
 
-    try {
-      const res = await fetch(`${API}/${userEmail}`, {
-        method: "DELETE",
-      });
+        if (!userEmail) return;
 
-      const data = await res.json();
-      setWishlist(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to clear wishlist");
-    }
-  };
+        try {
+            const res = await fetch(`${API}/${userEmail}`, {
+                method: "DELETE",
+            });
 
-  const isWishlisted = (garmentId) => {
-    return wishlist.some((item) => item.garment?._id === garmentId);
-  };
+            const data = await res.json();
+            setWishlist(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to clear wishlist");
+        }
+    };
 
-  useEffect(() => {
-    fetchWishlist();
-  }, []);
+    const isWishlisted = (garmentId, size = "", colorCode = "") => {
+        return wishlist.some(
+            (item) =>
+                item.garment?._id === garmentId &&
+                (item.size || "") === (size || "") &&
+                (item.selectedColorCode || "") === (colorCode || "")
+        );
+    };
 
-  return (
-    <WishlistContext.Provider
-      value={{
-        wishlist,
-        fetchWishlist,
-        toggleWishlist,
-        clearWishlist,
-        isWishlisted,
-      }}
-    >
-      {children}
-    </WishlistContext.Provider>
-  );
+    useEffect(() => {
+        fetchWishlist();
+    }, []);
+
+    return (
+        <WishlistContext.Provider
+            value={{
+                wishlist,
+                fetchWishlist,
+                toggleWishlist,
+                clearWishlist,
+                isWishlisted,
+            }}
+        >
+            {children}
+        </WishlistContext.Provider>
+    );
 }
