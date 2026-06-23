@@ -4,6 +4,7 @@ import { useSearch } from '../context/SearchContext';
 import { useNavigate } from 'react-router-dom';
 import FilterSidebar from '../components/FilterSidebar';
 import { getPriceBySize, getDiscountedPrice } from "../utils/priceUtils";
+import { useWishlist } from '../context/WishlistContext';
 import './Home.css';
 import '../components/FilterSidebar.css';
 
@@ -17,6 +18,7 @@ export default function Shopby() {
   const [selectedColors, setSelectedColors] = useState({});
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { toggleWishlist, isWishlisted } = useWishlist();
   const { addToCart } = useCart();
   const { search } = useSearch();
 
@@ -163,9 +165,19 @@ export default function Shopby() {
 
                   <div key={garment._id} className="garment-card">
                     <div
-                      className="garment-image-container"
-                      onClick={() => navigate(`/product/${garment._id}`)}
-                    >
+                          className="garment-image-container"
+                          onClick={() => navigate(`/product/${garment._id}`)}
+                        >
+
+                          <button
+                            className="wishlist-heart-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleWishlist(garment._id);
+                            }}
+                          >
+                            {isWishlisted(garment._id) ? "❤️" : "🤍"}
+                          </button>
                       {displayImage ? (
                         <img
                           src={displayImage}

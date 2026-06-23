@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { getPriceBySize, getDiscountedPrice } from "../utils/priceUtils";
+import { useWishlist } from '../context/WishlistContext';
 import './ProductDetails.css';
 export default function ProductDetails() {
     const { id } = useParams();
@@ -13,6 +14,7 @@ export default function ProductDetails() {
     const [selectedColor, setSelectedColor] = useState(null);
     const [mainImage, setMainImage] = useState("");
     const [similarSelectedSizes, setSimilarSelectedSizes] = useState({});
+    const { toggleWishlist, isWishlisted } = useWishlist();
 
     const [similar, setSimilar] = useState([]);
 
@@ -148,7 +150,9 @@ export default function ProductDetails() {
                                 className="product-image"
                             />
                         </div>
+
                     </div>
+
                 </div>
 
                 <div className="product-info-section">
@@ -227,9 +231,19 @@ export default function ProductDetails() {
                         ))}
                     </div>
 
-                    <button className="add-cart-btn" onClick={() => AddTocart(product)}>
-                        Add To Cart
-                    </button>
+                    <div className="product-actions">
+                        <button className="add-cart-btn" onClick={() => AddTocart(product)}>
+                            Add To Cart
+                        </button>
+
+                        <button
+                            className={`wishlist-btn-detail ${isWishlisted(product._id) ? "active" : ""
+                                }`}
+                            onClick={() => toggleWishlist(product._id)}
+                        >
+                            ♥
+                        </button>
+                    </div>
                 </div>
 
             </div>
@@ -279,6 +293,15 @@ export default function ProductDetails() {
                                         });
                                     }}
                                 >
+                                    <button
+                                        className="wishlist-heart-btn"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleWishlist(item._id);
+                                        }}
+                                    >
+                                        {isWishlisted(item._id) ? "❤️" : "🤍"}
+                                    </button>
                                     {itemImage ? (
                                         <img
                                             src={itemImage}

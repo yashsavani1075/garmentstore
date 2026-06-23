@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSearch } from "../context/SearchContext";
 import CategoryTiles from "../components/CategoryTiles";
 import { getPriceBySize, getDiscountedPrice } from "../utils/priceUtils";
+import { useWishlist } from "../context/WishlistContext";
 import './Home.css';
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
   const [selectedColors, setSelectedColors] = useState({});
   const { addToCart } = useCart();
   const { search } = useSearch();
+  const { toggleWishlist, isWishlisted } = useWishlist();
 
   const filteredGarments = garments.filter((garment) => {
     if (!search.trim()) return true;
@@ -138,6 +140,16 @@ export default function Home() {
                           className="garment-image-container"
                           onClick={() => navigate(`/product/${garment._id}`)}
                         >
+
+                          <button
+                            className="wishlist-heart-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleWishlist(garment._id);
+                            }}
+                          >
+                            {isWishlisted(garment._id) ? "❤️" : "🤍"}
+                          </button>
                           {displayImage ? (
                             <img
                               src={displayImage}
@@ -161,8 +173,8 @@ export default function Home() {
                                   key={`${variant.colorCode}-${index}`}
                                   type="button"
                                   className={`product-color-dot ${selectedColors[garment._id]?.colorCode === variant.colorCode
-                                      ? "selected-color-dot"
-                                      : ""
+                                    ? "selected-color-dot"
+                                    : ""
                                     }`}
                                   style={{ backgroundColor: variant.colorCode }}
                                   title={variant.colorName}
@@ -229,6 +241,7 @@ export default function Home() {
                                 </span>
                               )}
                             </div>
+
                             <button className='primary-btn' style={{ padding: '10px 20px', fontSize: '0.9rem' }} onClick={() => AddTocart(garment)}>Add to Cart</button>
                           </div>
                         </div>

@@ -1,21 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
+import React, { useState, useEffect } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 import { useSearch } from "../context/SearchContext";
-// import { toast } from 'react-toastify';
-import './Navbar.css';
-
+import "./Navbar.css";
 
 export default function Navbar() {
   const { search, setSearch } = useSearch();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { getCartItemCount } = useCart();
 
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
-  const closeDropdown = () => setIsDropdownOpen(false);
   const [categories, setCategories] = useState({});
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+
   const token = localStorage.getItem("token");
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -28,18 +26,16 @@ export default function Navbar() {
       const grouped = {};
 
       garments.forEach((item) => {
-        const category = item.category;
-        const subCategory = item.subCategory;
+        if (!item.category || !item.subCategory) return;
 
-        if (!grouped[category]) {
-          grouped[category] = new Set();
+        if (!grouped[item.category]) {
+          grouped[item.category] = new Set();
         }
 
-        grouped[category].add(subCategory);
+        grouped[item.category].add(item.subCategory);
       });
 
       const result = {};
-
       Object.keys(grouped).forEach((key) => {
         result[key] = [...grouped[key]];
       });
@@ -50,49 +46,48 @@ export default function Navbar() {
     }
   };
 
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.reload();
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
+
         <Link to="/" className="navbar-logo">
-          {/* <img src="/Images/logo.png" alt="" /> */}
-          Website
+          Garment<span>Store</span>
         </Link>
+
         <div className="nav-menu">
-          <NavLink to="/" className='nav-link'>
-            Home
-          </NavLink>
-          <NavLink to="/new-arrival" className='nav-link'>
-            New Arrival
-          </NavLink>
-          <div className="nav-item dropdown"
+          <NavLink to="/" className="nav-link">Home</NavLink>
+          <NavLink to="/new-arrival" className="nav-link">New Arrival</NavLink>
+
+          <div
+            className="nav-dropdown"
             onMouseEnter={() => setIsDropdownOpen(true)}
             onMouseLeave={() => setIsDropdownOpen(false)}
           >
-            <div className="shopby-container">
-              <NavLink to="/shopby" className="nav-link">
-                Shop By
-              </NavLink>
-
-              <button className="dropdown-toggle-btn" onClick={toggleDropdown}>▼</button>
-            </div>
+            <NavLink to="/shopby" className="nav-link dropdown-link">
+              Shop By
+              <span className="dropdown-arrow">▾</span>
+            </NavLink>
 
             {isDropdownOpen && (
               <div className="dropdown-menu">
                 {Object.entries(categories).map(([category, subs]) => (
                   <div key={category} className="dropdown-category">
-
                     <Link
                       to={`/${category.toLowerCase()}`}
                       className="dropdown-item"
                     >
                       {category}
-                      {/* <div className="arrow-icon"> */}
-                      <p>&gt;</p>
-                      {/* </div> */}
+                      <span>›</span>
                     </Link>
 
                     <div className="submenu">
-                      {subs.map(sub => (
+                      {subs.map((sub) => (
                         <Link
                           key={sub}
                           to={`/${category.toLowerCase()}/${sub.toLowerCase()}`}
@@ -102,70 +97,61 @@ export default function Navbar() {
                         </Link>
                       ))}
                     </div>
-
                   </div>
                 ))}
               </div>
             )}
           </div>
-          <NavLink to="/hot-deals" className='nav-link'>
-            Hot Deals
-          </NavLink>
+
+          <NavLink to="/hot-deals" className="nav-link">Hot Deals</NavLink>
         </div>
-        <div className='nav-action'>
-          <div
-            className="search-trigger"
+
+        <div className="nav-actions">
+          <button
+            className="icon-btn"
             onClick={() => setShowSearch(!showSearch)}
           >
-            &#x1F50D; Search
-          </div>
-          <NavLink to="/cart" className='nav-link'>
-            🛒 Cart
+            🔍
+            <span>Search</span>
+          </button>
+
+          <NavLink to="/wishlist" className="icon-link">
+            ♡ <span>Wishlist</span>
+          </NavLink>
+
+          <NavLink to="/cart" className="icon-link cart-link">
+            🛒 <span>Cart</span>
             {getCartItemCount() > 0 && (
               <span className="cart-badge">{getCartItemCount()}</span>
             )}
           </NavLink>
-          <NavLink to="/profile/account" className='nav-link'>Profile</NavLink>
-          {
-            !token ? (
-              <div className="auth-links">
-                <NavLink
-                  to="/login"
-                  className="nav-link login-link"
-                >
-                  Login
-                </NavLink>
 
-                <NavLink
-                  to="/signup"
-                  className="nav-link signup-link"
-                >
-                  Signup
-                </NavLink>
-              </div>
-            ) : (
-              <button
-                className="logout-btn"
-                onClick={() => {
-                  localStorage.removeItem("token");
-                  localStorage.removeItem("user");
-                  // toast.success("Logout successfully");
-                  window.location.reload();
-                }}
-              >
+          {token ? (
+            <>
+              <NavLink to="/profile/account" className="profile-link">
+                Profile
+              </NavLink>
+              <button className="logout-btn" onClick={logout}>
                 Logout
               </button>
-            )
-          }
+            </>
+          ) : (
+            <div className="auth-links">
+              <NavLink to="/login" className="login-btn">Login</NavLink>
+              <NavLink to="/signup" className="signup-btn">Signup</NavLink>
+            </div>
+          )}
         </div>
       </div>
+
       {showSearch && (
         <div className="navbar-search">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search products..."
+            placeholder="Search for shirts, sarees, kurtis..."
+            autoFocus
           />
         </div>
       )}

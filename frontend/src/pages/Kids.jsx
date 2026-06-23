@@ -4,6 +4,7 @@ import { useSearch } from '../context/SearchContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import FilterSidebar from '../components/FilterSidebar';
 import { getPriceBySize, getDiscountedPrice } from "../utils/priceUtils";
+import { useWishlist } from '../context/WishlistContext';
 import './Home.css';
 import '../components/FilterSidebar.css';
 
@@ -20,6 +21,7 @@ export default function Kids() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { addToCart } = useCart();
   const { search } = useSearch();
+  const { toggleWishlist, isWishlisted } = useWishlist();
 
   const AddTocart = (garment) => {
     const selectedSize = selectedSizes[garment._id];
@@ -177,9 +179,19 @@ export default function Kids() {
                 return (
                   <div key={garment._id} className="garment-card">
                     <div
-                      className="garment-image-container"
-                      onClick={() => navigate(`/product/${garment._id}`)}
-                    >
+                          className="garment-image-container"
+                          onClick={() => navigate(`/product/${garment._id}`)}
+                        >
+
+                          <button
+                            className="wishlist-heart-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleWishlist(garment._id);
+                            }}
+                          >
+                            {isWishlisted(garment._id) ? "❤️" : "🤍"}
+                          </button>
                       {displayImage ? (
                         <img
                           src={displayImage}

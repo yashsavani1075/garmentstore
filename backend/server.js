@@ -20,6 +20,8 @@ const userRoutes = require("./routes/userRoutes");
 const promoRoutes = require("./routes/promoRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+const wishlistRoutes = require("./routes/wishlistRoutes");
 
 connectDB();
 createDefaultConfig();
@@ -42,6 +44,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/promos", promoRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/admin/dashboard", dashboardRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/wishlist", wishlistRoutes);
 
 app.listen(PORT, () => {
   console.log(

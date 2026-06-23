@@ -532,3 +532,32 @@
   outline: 2px solid #222;
    outline-offset: 2px;  
 } */
+
+
+.garment-image-container {
+  position: relative;
+}
+
+.wishlist-heart-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+
+  width: 42px;
+  height: 42px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: rgba(255,255,255,0.95);
+  cursor: pointer;
+
+  font-size: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}

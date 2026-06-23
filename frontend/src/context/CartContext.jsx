@@ -1,137 +1,166 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
+
 const CartContext = createContext();
 
 export const useCart = () => useContext(CartContext);
+
+const API = "http://localhost:5000/api/cart";
 
 const getCurrentUser = () => {
   const user = localStorage.getItem("user");
   return user ? JSON.parse(user) : null;
 };
 
-const getCartKey = () => {
-  const user = getCurrentUser();
-  return user ? `cart_${user.email}` : "cart_guest";
-};
-
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem(getCartKey());
+  const [cart, setCart] = useState([]);
 
-    try {
-      return savedCart ? JSON.parse(savedCart) : [];
-    } catch (error) {
-      console.error("Failed to parse cart", error);
-      return [];
+  const getUserEmail = () => {
+    const user = getCurrentUser();
+    return user?.email;
+  };
+
+  const reloadCartForUser = async () => {
+    const userEmail = getUserEmail();
+
+    if (!userEmail) {
+      setCart([]);
+      return;
     }
-  });
-
-  useEffect(() => {
-    localStorage.setItem(getCartKey(), JSON.stringify(cart));
-  }, [cart]);
-
-  const reloadCartForUser = () => {
-    const savedCart = localStorage.getItem(getCartKey());
 
     try {
-      setCart(savedCart ? JSON.parse(savedCart) : []);
+      const res = await fetch(`${API}/${userEmail}`);
+      const data = await res.json();
+      setCart(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error("Failed to reload cart", error);
+      console.error("Failed to load cart", error);
       setCart([]);
     }
   };
 
-  const addToCart = (garment, size) => {
+  useEffect(() => {
+    reloadCartForUser();
+  }, []);
+
+  const addToCart = async (garment, size) => {
+    const userEmail = getUserEmail();
+
+    if (!userEmail) {
+      toast.error("Please login first");
+      return;
+    }
+
     if (!size) {
       toast.error("Please select a size before adding to cart!");
       return;
     }
 
-    const selectedColor =
-      garment.selectedColorCode || garment.color || "";
+    try {
+      const res = await fetch(`${API}/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userEmail,
+          garmentId: garment._id,
+          size,
+          selectedColorName: garment.selectedColorName || "",
+          selectedColorCode:
+            garment.selectedColorCode || garment.color || "",
+          imageUrl: garment.imageUrl || "",
+        }),
+      });
 
-    setCart((prevCart) => {
-      const existingItemIndex = prevCart.findIndex(
-        (item) =>
-          item.garment._id === garment._id &&
-          item.size === size &&
-          (item.garment.selectedColorCode ||
-            item.garment.color ||
-            "") === selectedColor
-      );
+      const data = await res.json();
 
-      if (existingItemIndex >= 0) {
-        return prevCart.map((item, index) =>
-          index === existingItemIndex
-            ? {
-              ...item,
-              quantity: item.quantity + 1,
-            }
-            : item
-        );
+      if (!res.ok) {
+        toast.error(data.message || "Failed to add to cart");
+        return;
       }
 
-      return [
-        ...prevCart,
-        {
-          garment,
-          size,
-          quantity: 1,
-        },
-      ];
-    });
-
-    toast.success("Added to cart!");
+      setCart(data);
+      toast.success("Added to cart!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Cart update failed");
+    }
   };
 
-  const updateQuantity = (garmentId, size, newQuantity, colorCode) => {
-    if (newQuantity < 1) {
-      removeFromCart(
-        garmentId,
-        size,
-        colorCode
-      );
+  const updateQuantity = async (garmentId, size, newQuantity, colorCode) => {
+    const userEmail = getUserEmail();
+
+    if (!userEmail) return;
+
+    try {
+      const res = await fetch(`${API}/quantity`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userEmail,
+          garmentId,
+          size,
+          colorCode,
+          quantity: newQuantity,
+        }),
+      });
+
+      const data = await res.json();
+      setCart(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update quantity");
+    }
+  };
+
+  const removeFromCart = async (garmentId, size, colorCode) => {
+    const userEmail = getUserEmail();
+
+    if (!userEmail) return;
+
+    try {
+      const res = await fetch(`${API}/remove`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userEmail,
+          garmentId,
+          size,
+          colorCode,
+        }),
+      });
+
+      const data = await res.json();
+      setCart(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to remove item");
+    }
+  };
+
+  const clearCart = async () => {
+    const userEmail = getUserEmail();
+
+    if (!userEmail) {
+      setCart([]);
       return;
     }
 
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.garment._id === garmentId &&
-          item.size === size &&
-          (item.garment.selectedColorCode ||
-            item.garment.color ||
-            "") === colorCode
-          ? {
-            ...item,
-            quantity: newQuantity,
-          }
-          : item
-      )
-    );
-  };
+    try {
+      const res = await fetch(`${API}/${userEmail}`, {
+        method: "DELETE",
+      });
 
-  const removeFromCart = (
-    garmentId,
-    size,
-    colorCode
-  ) => {
-    setCart((prevCart) =>
-      prevCart.filter(
-        (item) =>
-          !(
-            item.garment._id === garmentId &&
-            item.size === size &&
-            (item.garment.selectedColorCode ||
-              item.garment.color ||
-              "") === colorCode
-          )
-      )
-    );
-  };
-
-  const clearCart = () => {
-    setCart([]);
-    localStorage.removeItem(getCartKey());
+      const data = await res.json();
+      setCart(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to clear cart");
+    }
   };
 
   const getCartTotal = () => {
@@ -139,7 +168,7 @@ export const CartProvider = ({ children }) => {
       return (
         total +
         Number(item.garment.selectedPrice || item.garment.price) *
-        item.quantity
+          item.quantity
       );
     }, 0);
   };

@@ -6,11 +6,13 @@ import { CartProvider } from './context/CartContext.jsx'
 import { SearchProvider } from './context/SearchContext.jsx'
 import { AdminAuthProvider } from './context/AdminAuthContext.jsx'
 import { ToastContainer } from "react-toastify";
+import { WishlistProvider } from "./context/WishlistContext";
 import "react-toastify/dist/ReactToastify.css";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <CartProvider>
+      <WishlistProvider>
       <SearchProvider>
         <AdminAuthProvider>
           <App />
@@ -25,6 +27,7 @@ createRoot(document.getElementById('root')).render(
           />
         </AdminAuthProvider>
       </SearchProvider>
+      </WishlistProvider>
     </CartProvider>
   </StrictMode>,
 )

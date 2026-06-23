@@ -3,6 +3,7 @@ import { useCart } from "../context/CartContext";
 import { useSearch } from "../context/SearchContext";
 import { useNavigate } from "react-router-dom";
 import { getPriceBySize, getDiscountedPrice } from "../utils/priceUtils";
+import { useWishlist } from '../context/WishlistContext';
 import "./Home.css";
 
 export default function HotDeals() {
@@ -13,8 +14,10 @@ export default function HotDeals() {
   const [selectedSizes, setSelectedSizes] = useState({});
   const [selectedColors, setSelectedColors] = useState({});
 
+
   const { addToCart } = useCart();
   const { search } = useSearch();
+  const { toggleWishlist, isWishlisted } = useWishlist();
 
   const filteredGarments = garments.filter((garment) =>
     garment.title?.toLowerCase().includes(search.toLowerCase()) ||
@@ -125,6 +128,16 @@ export default function HotDeals() {
                           className="garment-image-container"
                           onClick={() => navigate(`/product/${garment._id}`)}
                         >
+
+                          <button
+                            className="wishlist-heart-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleWishlist(garment._id);
+                            }}
+                          >
+                            {isWishlisted(garment._id) ? "❤️" : "🤍"}
+                          </button>
                           {displayImage ? (
                             <img
                               src={displayImage}

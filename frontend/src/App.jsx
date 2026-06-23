@@ -26,6 +26,7 @@ import ProfileLayout from "./pages/profile/ProfileLayout";
 import AccountDetails from "./pages/profile/AccountDetails";
 import AddressPage from "./pages/profile/AddressPage";
 import MyOrdersPage from "./pages/profile/MyOrdersPage";
+import Wishlist from "./pages/Wishlist";
 import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
 import AiChat from "./components/AiChat";
 
@@ -71,6 +72,7 @@ function Layout() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/profile" element={<ProfileLayout />}>
           <Route index element={<AccountDetails />} />
           <Route path="account" element={<AccountDetails />} />
@@ -78,6 +80,7 @@ function Layout() {
           <Route path="orders" element={<MyOrdersPage />} />
         </Route>
       </Routes>
+
 
       <ScrollToTopButton />
       {!isAdmin && <AiChat />}

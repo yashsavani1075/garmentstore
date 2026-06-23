@@ -3,6 +3,7 @@ import { useCart } from '../context/CartContext';
 import { useSearch } from '../context/SearchContext';
 import { useNavigate } from 'react-router-dom';
 import { getPriceBySize, getDiscountedPrice } from "../utils/priceUtils";
+import { useWishlist } from '../context/WishlistContext';
 import './Home.css'; // Reusing Home styles for the garment grid
 
 export default function NewArrival() {
@@ -12,6 +13,7 @@ export default function NewArrival() {
   const [selectedSizes, setSelectedSizes] = useState({});
   const [selectedColors, setSelectedColors] = useState({});
   const [latestDateStr, setLatestDateStr] = useState("");
+  const { toggleWishlist, isWishlisted } = useWishlist();
   const { addToCart } = useCart();
   const { search } = useSearch();
 
@@ -146,10 +148,20 @@ export default function NewArrival() {
                 selectedColor?.colorCode || garment.color;
               return (
                 <div key={garment._id} className="garment-card" >
-                  <div
+                 <div
                           className="garment-image-container"
                           onClick={() => navigate(`/product/${garment._id}`)}
                         >
+
+                          <button
+                            className="wishlist-heart-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleWishlist(garment._id);
+                            }}
+                          >
+                            {isWishlisted(garment._id) ? "❤️" : "🤍"}
+                          </button>
                           {displayImage ? (
                             <img
                               src={displayImage}
