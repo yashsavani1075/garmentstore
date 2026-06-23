@@ -8,7 +8,7 @@
 }
 
 .navbar-container {
-  max-width: 1500px;
+  max-width: 1750px;
   height: 74px;
   margin: 0 auto;
   padding: 0 48px;
@@ -56,8 +56,8 @@
 .nav-link:hover,
 .nav-link.active,
 .dropdown-btn:hover {
-  color: var(--primary-color);
-  background: rgba(0, 0, 0, 0.04);
+  color: var(--primary-hover);
+  /* background: rgba(0, 0, 0, 0.04); */
 }
 
 .nav-dropdown {
@@ -72,7 +72,7 @@
 
 .dropdown-menu {
   position: absolute;
-  top: 48px;
+  top: 40px;
   left: 0;
   width: 230px;
   background: #fff;
@@ -111,7 +111,7 @@
   display: none;
   position: absolute;
   top: 0;
-  left: calc(100% + 10px);
+  left: calc(100%);
   width: 230px;
   background: #fff;
   border-radius: 18px;
@@ -227,6 +227,24 @@
 .navbar-search input:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+}
+
+.auth-area {
+  margin-left: 25px;
+  padding-left: 30px;
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-link {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.profile-link:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--primary-color);
 }
 
 @keyframes dropdownFade {

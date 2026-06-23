@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import "./MyOrders.css";
+import "./MyOrdersPage.css";
 
 export default function MyOrders() {
   const navigate = useNavigate();

@@ -8,7 +8,6 @@ import Admin from "./pages/admin/Admin";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminSignup from "./pages/admin/AdminSignup";
 import Dashboard from "./pages/admin/Dashboard";
-import MyOrders from "./pages/MyOrders";
 import NewArrival from "./pages/NewArrival";
 import Men from "./pages/Men";
 import Women from "./pages/Women";
@@ -64,7 +63,6 @@ function Layout() {
         <Route path="/female/:subCategory" element={<Women />} />
         <Route path="/kids" element={<Kids />} />
         <Route path="/kids/:subCategory" element={<Kids />} />
-        <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/shopby" element={<Shopby />} />
         <Route path="/hot-deals" element={<HotDeal />} />
         <Route path="/cart" element={<Cart />} />
@@ -77,6 +75,7 @@ function Layout() {
           <Route index element={<AccountDetails />} />
           <Route path="account" element={<AccountDetails />} />
           <Route path="address" element={<AddressPage />} />
+          <Route path="wishlist" element={<Wishlist />} />
           <Route path="orders" element={<MyOrdersPage />} />
         </Route>
       </Routes>

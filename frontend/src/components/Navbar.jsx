@@ -126,21 +126,29 @@ export default function Navbar() {
             )}
           </NavLink>
 
-          {token ? (
-            <>
-              <NavLink to="/profile/account" className="profile-link">
-                Profile
-              </NavLink>
-              <button className="logout-btn" onClick={logout}>
-                Logout
-              </button>
-            </>
-          ) : (
-            <div className="auth-links">
-              <NavLink to="/login" className="login-btn">Login</NavLink>
-              <NavLink to="/signup" className="signup-btn">Signup</NavLink>
-            </div>
-          )}
+          <div className="auth-area">
+            {token ? (
+              <>
+                <NavLink to="/profile/account" className="profile-link">
+                  👤 Profile
+                </NavLink>
+
+                <button className="logout-btn" onClick={logout}>
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <NavLink to="/login" className="login-btn">
+                  Login
+                </NavLink>
+
+                <NavLink to="/signup" className="signup-btn">
+                  Signup
+                </NavLink>
+              </>
+            )}
+          </div>
         </div>
       </div>
 

@@ -9,6 +9,7 @@ export default function ProfileLayout() {
         <aside className="profile-sidebar">
           <NavLink to="/profile/account">Account Details</NavLink>
           <NavLink to="/profile/address">My Address</NavLink>
+          <NavLink to="/profile/wishlist">My Wishlist</NavLink>
           <NavLink to="/profile/orders">My Orders</NavLink>
         </aside>
 
