@@ -12,6 +12,14 @@ const getCurrentUser = () => {
     return user ? JSON.parse(user) : null;
 };
 
+const getAuthHeaders = () => {
+    const token = localStorage.getItem("token");
+    return {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
+    };
+};
+
 export function WishlistProvider({ children }) {
     const [wishlist, setWishlist] = useState([]);
 
@@ -29,7 +37,9 @@ export function WishlistProvider({ children }) {
         }
 
         try {
-            const res = await fetch(`${API}/${userEmail}`);
+            const res = await fetch(`${API}/${userEmail}`, {
+                headers: getAuthHeaders(),
+            });
             const data = await res.json();
 
             setWishlist(Array.isArray(data) ? data : []);
@@ -54,9 +64,7 @@ export function WishlistProvider({ children }) {
         try {
             const res = await fetch(`${API}/toggle`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: getAuthHeaders(),
                 body: JSON.stringify({
                     userEmail,
                     garmentId,
@@ -90,6 +98,7 @@ export function WishlistProvider({ children }) {
         try {
             const res = await fetch(`${API}/${userEmail}`, {
                 method: "DELETE",
+                headers: getAuthHeaders(),
             });
 
             const data = await res.json();

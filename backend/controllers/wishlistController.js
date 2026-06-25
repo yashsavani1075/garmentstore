@@ -1,4 +1,5 @@
 const Wishlist = require("../models/Wishlist");
+const User = require("../models/User");
 
 const formatWishlist = async (wishlist) => {
   if (!wishlist) return [];
@@ -19,7 +20,9 @@ const formatWishlist = async (wishlist) => {
 
 exports.getWishlist = async (req, res) => {
   try {
-    const { userEmail } = req.params;
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const userEmail = user.email;
 
     const wishlist = await Wishlist.findOne({ userEmail });
 
@@ -34,13 +37,16 @@ exports.getWishlist = async (req, res) => {
 exports.toggleWishlist = async (req, res) => {
   try {
     const {
-      userEmail,
       garmentId,
       size,
       selectedColorName,
       selectedColorCode,
       imageUrl,
     } = req.body;
+
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const userEmail = user.email;
 
     if (!userEmail || !garmentId) {
       return res.status(400).json({ message: "Missing wishlist details" });
@@ -101,7 +107,9 @@ exports.toggleWishlist = async (req, res) => {
 
 exports.clearWishlist = async (req, res) => {
   try {
-    const { userEmail } = req.params;
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const userEmail = user.email;
 
     await Wishlist.findOneAndUpdate({ userEmail }, { items: [] });
 

@@ -12,6 +12,14 @@ const getCurrentUser = () => {
   return user ? JSON.parse(user) : null;
 };
 
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+};
+
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
@@ -29,7 +37,9 @@ export const CartProvider = ({ children }) => {
     }
 
     try {
-      const res = await fetch(`${API}/${userEmail}`);
+      const res = await fetch(`${API}/${userEmail}`, {
+        headers: getAuthHeaders(),
+      });
       const data = await res.json();
       setCart(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -58,9 +68,7 @@ export const CartProvider = ({ children }) => {
     try {
       const res = await fetch(`${API}/add`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           userEmail,
           garmentId: garment._id,
@@ -95,9 +103,7 @@ export const CartProvider = ({ children }) => {
     try {
       const res = await fetch(`${API}/quantity`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           userEmail,
           garmentId,
@@ -123,9 +129,7 @@ export const CartProvider = ({ children }) => {
     try {
       const res = await fetch(`${API}/remove`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           userEmail,
           garmentId,
@@ -153,6 +157,7 @@ export const CartProvider = ({ children }) => {
     try {
       const res = await fetch(`${API}/${userEmail}`, {
         method: "DELETE",
+        headers: getAuthHeaders(),
       });
 
       const data = await res.json();

@@ -216,7 +216,8 @@ export default function Checkout() {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    amount: finalAmount,
+                    items: cart,
+                    promoCode: appliedPromo
                 }),
             });
 

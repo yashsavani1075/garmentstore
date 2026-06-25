@@ -32,7 +32,11 @@ exports.signup = async (req, res) => {
     <p>Happy shopping!</p>
   `,
     });
-    res.status(201).json(user);
+    res.status(201).json({
+      id: user._id,
+      name: user.name,
+      email: user.email
+    });
   } catch (err) {
     res.status(500).json({
       message: err.message,

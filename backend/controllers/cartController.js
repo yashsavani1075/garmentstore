@@ -1,5 +1,6 @@
 const Cart = require("../models/Cart");
 const Garment = require("../models/Garment");
+const User = require("../models/User");
 
 const getDiscountedPrice = (price, discount) => {
   if (!discount || discount <= 0) return price;
@@ -43,7 +44,9 @@ const formatCart = async (cart) => {
 
 exports.getCart = async (req, res) => {
   try {
-    const { userEmail } = req.params;
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const userEmail = user.email;
 
     const cart = await Cart.findOne({ userEmail });
 
@@ -58,13 +61,16 @@ exports.getCart = async (req, res) => {
 exports.addToCart = async (req, res) => {
   try {
     const {
-      userEmail,
       garmentId,
       size,
       selectedColorName,
       selectedColorCode,
       imageUrl,
     } = req.body;
+
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const userEmail = user.email;
 
     if (!userEmail || !garmentId || !size) {
       return res.status(400).json({ message: "Missing cart details" });
@@ -117,7 +123,11 @@ exports.addToCart = async (req, res) => {
 
 exports.updateQuantity = async (req, res) => {
   try {
-    const { userEmail, garmentId, size, colorCode, quantity } = req.body;
+    const { garmentId, size, colorCode, quantity } = req.body;
+
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const userEmail = user.email;
 
     const cart = await Cart.findOne({ userEmail });
 
@@ -159,7 +169,11 @@ exports.updateQuantity = async (req, res) => {
 
 exports.removeFromCart = async (req, res) => {
   try {
-    const { userEmail, garmentId, size, colorCode } = req.body;
+    const { garmentId, size, colorCode } = req.body;
+
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const userEmail = user.email;
 
     const cart = await Cart.findOne({ userEmail });
 
@@ -188,7 +202,9 @@ exports.removeFromCart = async (req, res) => {
 
 exports.clearCart = async (req, res) => {
   try {
-    const { userEmail } = req.params;
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const userEmail = user.email;
 
     await Cart.findOneAndDelete({ userEmail });
 

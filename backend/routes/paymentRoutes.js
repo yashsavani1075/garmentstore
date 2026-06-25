@@ -1,6 +1,7 @@
 const express = require("express");
 const crypto = require("crypto");
 const Razorpay = require("razorpay");
+const calculateTotal = require("../utils/calculateTotal");
 
 const router = express.Router();
 
@@ -12,7 +13,9 @@ const razorpay = new Razorpay({
 // Create Razorpay order
 router.post("/create-order", async (req, res) => {
   try {
-    const { amount } = req.body;
+    const { items, promoCode } = req.body;
+
+    const amount = await calculateTotal(items, promoCode);
 
     if (!amount || amount <= 0) {
       return res.status(400).json({ message: "Invalid amount" });
