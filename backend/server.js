@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
 
 const connectDB = require("./config/db");
 const createDefaultConfig = require("./utils/createDefaultConfig");
@@ -10,9 +9,6 @@ const garmentRoutes = require("./routes/garmentRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const authRoutes = require("./routes/authRoutes");
 const configRoutes = require("./routes/configRoutes");
-
-const app = express();
-const PORT = process.env.PORT;
 
 const adminAuthRoutes = require("./routes/adminAuthRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
@@ -23,6 +19,9 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes");
 
+const app = express();
+const PORT = process.env.PORT || 5000;
+
 connectDB();
 createDefaultConfig();
 
@@ -30,10 +29,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/admin/auth", adminAuthRoutes);
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "uploads"))
-);
 
 app.use("/api/garments", garmentRoutes);
 app.use("/api/orders", orderRoutes);
@@ -48,7 +43,5 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 
 app.listen(PORT, () => {
-  console.log(
-    `Server running on http://localhost:${PORT}`
-  );
+  console.log(`Server running on http://localhost:${PORT}`);
 });

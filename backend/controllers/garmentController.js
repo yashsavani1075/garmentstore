@@ -1,4 +1,5 @@
 const Garment = require("../models/Garment");
+const uploadToCloudinary = require("../utils/uploadToCloudinary");
 
 function parseArrayField(value) {
   if (!value) return [];
@@ -14,6 +15,17 @@ function parseArrayField(value) {
   if (Array.isArray(value)) return value;
 
   return [];
+}
+
+async function uploadFilesToCloudinary(files) {
+  const uploadedUrls = [];
+
+  for (const file of files) {
+    const result = await uploadToCloudinary(file.buffer);
+    uploadedUrls.push(result.secure_url);
+  }
+
+  return uploadedUrls;
 }
 
 exports.createGarment = async (req, res) => {
@@ -38,14 +50,17 @@ exports.createGarment = async (req, res) => {
 
     const files = req.files || [];
 
+    const uploadedUrls = await uploadFilesToCloudinary(files);
+
     let fileIndex = 0;
 
     const finalColorVariants = parsedColorVariants.map((variant) => {
       const imageCount = Number(variant.imageCount || 0);
 
-      const variantImages = files
-        .slice(fileIndex, fileIndex + imageCount)
-        .map((file) => `http://localhost:5000/uploads/${file.filename}`);
+      const variantImages = uploadedUrls.slice(
+        fileIndex,
+        fileIndex + imageCount
+      );
 
       fileIndex += imageCount;
 
@@ -173,14 +188,17 @@ exports.updateGarment = async (req, res) => {
       const parsedColorVariants = parseArrayField(colorVariants);
       const files = req.files || [];
 
+      const uploadedUrls = await uploadFilesToCloudinary(files);
+
       let fileIndex = 0;
 
       const finalColorVariants = parsedColorVariants.map((variant) => {
         const imageCount = Number(variant.imageCount || 0);
 
-        const newImages = files
-          .slice(fileIndex, fileIndex + imageCount)
-          .map((file) => `http://localhost:5000/uploads/${file.filename}`);
+        const newImages = uploadedUrls.slice(
+          fileIndex,
+          fileIndex + imageCount
+        );
 
         fileIndex += imageCount;
 
@@ -188,10 +206,7 @@ exports.updateGarment = async (req, res) => {
           ? variant.images
           : [];
 
-        const finalImages =
-          newImages.length > 0
-            ? newImages
-            : oldImages;
+        const finalImages = newImages.length > 0 ? newImages : oldImages;
 
         return {
           colorName: variant.colorName || "",
@@ -202,19 +217,17 @@ exports.updateGarment = async (req, res) => {
       });
 
       updateData.colorVariants = finalColorVariants;
+
       updateData.imageUrl =
         finalColorVariants[0]?.imageUrl || existingGarment.imageUrl;
+
       updateData.color =
         finalColorVariants[0]?.colorCode || color || existingGarment.color;
     }
 
-    const garment = await Garment.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      {
-        returnDocument: "after",
-      }
-    );
+    const garment = await Garment.findByIdAndUpdate(req.params.id, updateData, {
+      returnDocument: "after",
+    });
 
     res.json(garment);
   } catch (err) {
