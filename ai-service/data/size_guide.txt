@@ -1,0 +1,19 @@
+Men's Size Guide (in inches):
+- Small (S): Chest 36-38, Waist 30-32, Hips 36-38
+- Medium (M): Chest 39-41, Waist 33-35, Hips 39-41
+- Large (L): Chest 42-44, Waist 36-38, Hips 42-44
+- XL (Extra Large): Chest 45-47, Waist 39-41, Hips 45-47
+- XXL (Double XL): Chest 48-50, Waist 42-44, Hips 48-50
+
+Women's Size Guide (in inches):
+- Small (S): Bust 32-34, Waist 26-28, Hips 34-36
+- Medium (M): Bust 35-37, Waist 29-31, Hips 37-39
+- Large (L): Bust 38-40, Waist 32-34, Hips 40-42
+- XL (Extra Large): Bust 41-43, Waist 35-37, Hips 43-45
+- XXL (Double XL): Bust 44-46, Waist 38-40, Hips 46-48
+
+Kids' Size Guide:
+- Age 2-4 years: Height 35-40", Chest 21-23"
+- Age 4-6 years: Height 41-45", Chest 24-26"
+- Age 6-8 years: Height 46-50", Chest 27-29"
+- Age 8-10 years: Height 51-55", Chest 30-32"

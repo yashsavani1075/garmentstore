@@ -6,6 +6,90 @@ const {
   getSortOption,
 } = require("../utils/aiProductQueryBuilder");
 
+const RAG_SERVICE_URL =
+  process.env.RAG_SERVICE_URL || "http://localhost:8000/ai/rag";
+
+async function askPythonRAG(message) {
+  try {
+    const response = await fetch(RAG_SERVICE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.log("RAG service error:", data);
+      throw new Error("RAG service failed");
+    }
+
+    return data.reply || "Sorry, I don't have information about that.";
+  } catch (error) {
+    console.log("Python RAG error:", error.message);
+    return "Sorry, store guide is currently not available.";
+  }
+}
+
+const FILTER_KEYS = [
+  "category",
+  "subCategory",
+  "fabric",
+  "color",
+  "size",
+  "minPrice",
+  "maxPrice",
+  "discountOnly",
+  "sort",
+  "searchTerm",
+];
+
+const allowedSubCategories = [
+  "Shirt",
+  "T-Shirt",
+  "Jeans",
+  "Kurti",
+  "Saree",
+  "Top",
+  "Salwar Kameez",
+  "Salwar Suit & Gown",
+  "Lengha Choli",
+];
+
+function hasNewMainProductFilter(newFilters) {
+  return Boolean(
+    newFilters.category ||
+      newFilters.subCategory ||
+      newFilters.fabric ||
+      newFilters.color ||
+      newFilters.size ||
+      newFilters.minPrice ||
+      newFilters.maxPrice ||
+      newFilters.discountOnly === true ||
+      newFilters.sort ||
+      newFilters.searchTerm
+  );
+}
+
+function mergeFiltersSafely(currentFilters, newFilters) {
+  const isNewSearch = hasNewMainProductFilter(newFilters);
+
+  const base = isNewSearch ? {} : { ...currentFilters };
+
+  FILTER_KEYS.forEach((key) => {
+    if (newFilters[key] !== null && newFilters[key] !== undefined) {
+      base[key] = newFilters[key];
+    }
+  });
+
+  base.intent = newFilters.intent;
+  base.productPosition = newFilters.productPosition;
+
+  return base;
+}
+
 function getDiscountedPrice(price, discount) {
   if (!discount || discount <= 0) return price;
   return Math.round(price - (price * discount) / 100);
@@ -81,8 +165,16 @@ exports.askAI = async (req, res) => {
     }
 
     const newFilters = await extractFiltersWithAI(message);
+
+    if (newFilters.subCategory && !allowedSubCategories.includes(newFilters.subCategory)) {
+      newFilters.subCategory = null;
+    }
+    if (newFilters.intent === "SEARCH_PRODUCTS") {
+      newFilters.searchTerm = null;
+    }
     console.log("USER MESSAGE:", message);
     console.log("AI NEW FILTERS:", newFilters);
+
 
     if (newFilters.intent === "RESET") {
       return res.status(200).json({
@@ -95,10 +187,23 @@ exports.askAI = async (req, res) => {
       });
     }
 
+    if (newFilters.intent === "RAG_QUERY") {
+      const ragReply = await askPythonRAG(message);
+
+      return res.status(200).json({
+        success: true,
+        reply: ragReply,
+        filters: currentFilters,
+        count: 0,
+        products: [],
+        action: "RAG_ANSWER",
+      });
+    }
+
     if (newFilters.intent === "INVALID_PROMPT") {
       return res.status(200).json({
         success: true,
-        reply: "enter valid prompt",
+        reply: "Please enter a valid shopping or store-related question.",
         filters: currentFilters,
         count: 0,
         products: [],
@@ -106,23 +211,14 @@ exports.askAI = async (req, res) => {
       });
     }
 
-    const mergedFilters = { ...currentFilters };
-    Object.keys(newFilters).forEach((key) => {
-      if (newFilters[key] !== null) {
-        mergedFilters[key] = newFilters[key];
-      }
-    });
+    const filters = mergeFiltersSafely(currentFilters, newFilters);
 
-    mergedFilters.intent = newFilters.intent;
-    mergedFilters.productPosition = newFilters.productPosition;
-
-    const filters = mergedFilters;
     console.log("MERGED FILTERS:", filters);
 
     if (filters.intent === "VIEW_PRODUCT" && lastProducts.length > 0) {
       const selectedProduct = getSelectedProduct(
         lastProducts,
-        filters.productPosition,
+        filters.productPosition
       );
 
       if (!selectedProduct) {
@@ -160,10 +256,10 @@ exports.askAI = async (req, res) => {
       });
     }
 
-
-
     const query = buildMongoQuery(filters);
+
     console.log("MONGO QUERY:", query);
+
     const sortOption = getSortOption(filters.sort);
 
     const productsFromDB = await Garment.find(query)
@@ -199,10 +295,10 @@ exports.getChatSuggestions = async (req, res) => {
       suggestions: [
         "Show me cotton shirts under ₹1000",
         "Show black shirts for men",
+        "What is your return policy?",
+        "How do I choose the right size?",
+        "Which fabric is best for summer?",
         "Show sarees on discount",
-        "Show cheapest t-shirts",
-        "Show kids clothes",
-        "Show women kurtis",
         "Open first product",
         "Track my order",
       ],

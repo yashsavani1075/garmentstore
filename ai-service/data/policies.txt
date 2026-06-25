@@ -1,0 +1,28 @@
+Return Policy:
+- Returns are accepted within 7 days from the date of delivery.
+- Products must be unused, unworn, unwashed, and undamaged.
+- Original tags, labels, and packaging must be intact.
+- Return shipping charges apply as per the return reason.
+- Final sale items, custom orders, and intimate apparel are non-returnable.
+- For returns, please contact our customer support with your order details.
+
+Shipping Policy:
+- Delivery within India takes 3-7 business days depending on location.
+- International shipping takes 7-15 business days.
+- Shipping charges are calculated at checkout based on weight and destination.
+- Orders are processed within 24-48 hours.
+- You will receive a tracking number once your order is shipped.
+- We partner with reliable courier services for timely delivery.
+
+Payment:
+- We accept online payments via Credit Cards, Debit Cards, Net Banking, and UPI.
+- Cash on Delivery (COD) is available for select locations.
+- All payments are processed through secure payment gateways.
+- Prices are inclusive of applicable taxes.
+- We do not store any sensitive payment information on our servers.
+
+GarmentStore sells clothing for men, women, and kids.
+Customers can browse products by category, subcategory, fabric, color, size, discount, and price.
+Available categories are Male, Female, and Kids.
+Available fabrics include Cotton, Linen, Silk, Denim, Polyester, Rayon, and Wool.
+Customers can add products to cart, apply promo codes, checkout, and view their orders.
