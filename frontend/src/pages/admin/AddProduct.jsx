@@ -16,7 +16,7 @@ export default function AddProduct() {
     },
   ]);
   useEffect(() => {
-    fetch("http://localhost:5000/api/config")
+    fetch(`${import.meta.env.VITE_API_URL}/api/config`)
       .then(res => res.json())
       .then(data => {
         setCategories(data.categories);
@@ -123,7 +123,7 @@ export default function AddProduct() {
       });
 
       const adminToken = localStorage.getItem("adminToken");
-      const response = await fetch('http://localhost:5000/api/garments', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/garments`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${adminToken}`

@@ -183,7 +183,7 @@ export default function ShowProducts() {
       });
 
       const response = await fetch(
-        `http://localhost:5000/api/garments/${editingProduct._id}`,
+        `${import.meta.env.VITE_API_URL}/api/garments/${editingProduct._id}`,
         {
           method: "PUT",
           headers: {
@@ -212,7 +212,7 @@ export default function ShowProducts() {
   const fetchProducts = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/garments"
+        `${import.meta.env.VITE_API_URL}/api/garments`
       );
 
       const data = await response.json();
@@ -228,7 +228,7 @@ export default function ShowProducts() {
   const fetchConfig = async () => {
     try {
       const res = await fetch(
-        "http://localhost:5000/api/config"
+        `${import.meta.env.VITE_API_URL}/api/config`
       );
 
       const data = await res.json();
@@ -253,7 +253,7 @@ export default function ShowProducts() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/garments/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/garments/${id}`,
         {
           method: "DELETE",
           headers: {

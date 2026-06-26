@@ -20,7 +20,7 @@ export default function Navbar() {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/garments");
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/garments`);
       const garments = await res.json();
 
       const grouped = {};

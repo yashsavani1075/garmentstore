@@ -13,7 +13,7 @@ export default function AdminLogin() {
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        const res = await fetch("http://localhost:5000/api/admin/auth/login", {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/auth/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

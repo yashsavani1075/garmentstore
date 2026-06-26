@@ -5,7 +5,7 @@ const WishlistContext = createContext();
 
 export const useWishlist = () => useContext(WishlistContext);
 
-const API = "http://localhost:5000/api/wishlist";
+const API = `${import.meta.env.VITE_API_URL}/api/wishlist`;
 
 const getCurrentUser = () => {
     const user = localStorage.getItem("user");

@@ -12,7 +12,7 @@ export default function Orders() {
   const fetchOrders = async () => {
     try {
       const res = await fetch(
-        "http://localhost:5000/api/orders", {
+        `${import.meta.env.VITE_API_URL}/api/orders`, {
           headers: {
             "Authorization": `Bearer ${localStorage.getItem("adminToken")}`
           }
@@ -33,7 +33,7 @@ export default function Orders() {
   ) => {
     try {
       await fetch(
-        `http://localhost:5000/api/orders/${orderId}`,
+        `${import.meta.env.VITE_API_URL}/api/orders/${orderId}`,
         {
           method: "PUT",
           headers: {
@@ -62,7 +62,7 @@ export default function Orders() {
 
     try {
       await fetch(
-        `http://localhost:5000/api/orders/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/orders/${id}`,
         {
           method: "DELETE",
           headers: {

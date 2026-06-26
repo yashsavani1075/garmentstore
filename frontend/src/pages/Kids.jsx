@@ -60,7 +60,7 @@ export default function Kids() {
   }, [garments]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/garments')
+    fetch(`${import.meta.env.VITE_API_URL}/api/garments`)
       .then((r) => r.json())
       .then((data) => setGarments(data.filter((g) => g.category?.trim().toLowerCase() === 'kids')))
       .catch((e) => console.error(e))

@@ -62,7 +62,7 @@ export default function ProductDetails() {
     const fetchProduct = async () => {
 
         const res = await fetch(
-            `http://localhost:5000/api/garments/${id}`
+            `${import.meta.env.VITE_API_URL}/api/garments/${id}`
         );
 
         const data = await res.json();
@@ -87,7 +87,7 @@ export default function ProductDetails() {
     const fetchSimilar = async () => {
 
         const res = await fetch(
-            `http://localhost:5000/api/garments/similar/${id}`
+            `${import.meta.env.VITE_API_URL}/api/garments/similar/${id}`
         );
 
         const data = await res.json();

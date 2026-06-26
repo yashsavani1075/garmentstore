@@ -40,7 +40,7 @@ export default function Checkout() {
         }
 
         try {
-            const res = await fetch("http://localhost:5000/api/promos/validate", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/promos/validate`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -91,7 +91,7 @@ export default function Checkout() {
 
     const loadAddresses = async () => {
         try {
-            const res = await fetch("http://localhost:5000/api/users/addresses", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/addresses`, {
                 headers: {
                     Authorization: `Bearer ${getToken()}`,
                 },
@@ -141,7 +141,7 @@ export default function Checkout() {
                 return null;
             }
 
-            const res = await fetch("http://localhost:5000/api/users/addresses", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/addresses`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -209,7 +209,7 @@ export default function Checkout() {
         if (!finalAddress) return;
 
         try {
-            const res = await fetch("http://localhost:5000/api/payment/create-order", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/payment/create-order`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -238,7 +238,7 @@ export default function Checkout() {
 
                 handler: async function (response) {
                     const verifyRes = await fetch(
-                        "http://localhost:5000/api/payment/verify-payment",
+                        `${import.meta.env.VITE_API_URL}/api/payment/verify-payment`,
                         {
                             method: "POST",
                             headers: {
@@ -282,7 +282,7 @@ export default function Checkout() {
         const user = JSON.parse(localStorage.getItem("user"));
 
         try {
-            const response = await fetch("http://localhost:5000/api/orders", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/orders`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

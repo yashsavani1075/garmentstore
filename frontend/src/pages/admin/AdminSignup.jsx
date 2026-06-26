@@ -44,7 +44,7 @@ export default function AdminSignup() {
 
         try {
             const res = await fetch(
-                "http://localhost:5000/api/admin/auth/signup",
+                `${import.meta.env.VITE_API_URL}/api/admin/auth/signup`,
                 {
                     method: "POST",
                     headers: {

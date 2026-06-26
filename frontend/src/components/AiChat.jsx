@@ -32,7 +32,7 @@ export default function AiChat() {
         setLoading(true);
 
         try {
-            const res = await fetch("http://localhost:5000/api/ai/ask", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/ai/ask`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -100,7 +100,7 @@ export default function AiChat() {
 
         if (img.startsWith("http")) return img;
 
-        return `http://localhost:5000${img}`;
+        return `${import.meta.env.VITE_API_URL}${img}`;
     };
 
     return (

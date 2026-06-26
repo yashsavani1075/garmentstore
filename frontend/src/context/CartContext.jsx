@@ -5,7 +5,7 @@ const CartContext = createContext();
 
 export const useCart = () => useContext(CartContext);
 
-const API = "http://localhost:5000/api/cart";
+const API = `${import.meta.env.VITE_API_URL}/api/cart`;
 
 const getCurrentUser = () => {
   const user = localStorage.getItem("user");

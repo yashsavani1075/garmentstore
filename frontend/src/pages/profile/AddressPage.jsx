@@ -41,7 +41,7 @@ export default function AddressPage() {
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:5000/api/users/addresses", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/addresses`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
         },
@@ -95,8 +95,8 @@ export default function AddressPage() {
       const isEditing = Boolean(editAddressId);
 
       const url = isEditing
-        ? `http://localhost:5000/api/users/addresses/${editAddressId}`
-        : "http://localhost:5000/api/users/addresses";
+        ? `${import.meta.env.VITE_API_URL}/api/users/addresses/${editAddressId}`
+        : `${import.meta.env.VITE_API_URL}/api/users/addresses`;
 
       const method = isEditing ? "PUT" : "POST";
 
@@ -134,7 +134,7 @@ export default function AddressPage() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/users/addresses/${addressId}`,
+        `${import.meta.env.VITE_API_URL}/api/users/addresses/${addressId}`,
         {
           method: "DELETE",
           headers: {

@@ -13,7 +13,7 @@ export default function AdminConfig() {
 
   const fetchConfig = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/config");
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/config`);
       const data = await res.json();
       setConfig(data);
     } catch (err) {
@@ -30,7 +30,7 @@ export default function AdminConfig() {
   const addCategory = async () => {
     if (!categoryName.trim()) return;
 
-    await fetch("http://localhost:5000/api/config/category", {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/config/category`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +45,7 @@ export default function AdminConfig() {
 
   const deleteCategory = async (name) => {
     await fetch(
-      `http://localhost:5000/api/config/category/${encodeURIComponent(name)}`,
+      `${import.meta.env.VITE_API_URL}/api/config/category/${encodeURIComponent(name)}`,
       {
         method: "DELETE",
         headers: {
@@ -62,7 +62,7 @@ export default function AdminConfig() {
   const addSubCategory = async () => {
     if (!selectedCategory || !subCategory.trim()) return;
 
-    await fetch("http://localhost:5000/api/config/subcategory", {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/config/subcategory`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export default function AdminConfig() {
   };
 
   const deleteSubCategory = async (categoryName, subCategory) => {
-    await fetch("http://localhost:5000/api/config/subcategory", {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/config/subcategory`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -99,7 +99,7 @@ export default function AdminConfig() {
   const addFabric = async () => {
     if (!fabric.trim()) return;
 
-    await fetch("http://localhost:5000/api/config/fabric", {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/config/fabric`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -114,7 +114,7 @@ export default function AdminConfig() {
 
   const deleteFabric = async (fabricName) => {
     await fetch(
-      `http://localhost:5000/api/config/fabric/${encodeURIComponent(
+      `${import.meta.env.VITE_API_URL}/api/config/fabric/${encodeURIComponent(
         fabricName
       )}`,
       {
@@ -133,7 +133,7 @@ export default function AdminConfig() {
   const addSize = async () => {
     if (!size.trim()) return;
 
-    await fetch("http://localhost:5000/api/config/size", {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/config/size`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -148,7 +148,7 @@ export default function AdminConfig() {
 
   const deleteSize = async (sizeName) => {
     await fetch(
-      `http://localhost:5000/api/config/size/${encodeURIComponent(sizeName)}`,
+      `${import.meta.env.VITE_API_URL}/api/config/size/${encodeURIComponent(sizeName)}`,
       {
         method: "DELETE",
         headers: {

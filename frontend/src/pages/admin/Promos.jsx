@@ -20,7 +20,7 @@ export default function AdminPromos() {
   const token = localStorage.getItem("adminToken");
 
   const fetchPromos = async () => {
-    const res = await fetch("http://localhost:5000/api/promos", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/promos`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -47,8 +47,8 @@ export default function AdminPromos() {
     e.preventDefault();
 
     const url = editId
-      ? `http://localhost:5000/api/promos/${editId}`
-      : "http://localhost:5000/api/promos";
+      ? `${import.meta.env.VITE_API_URL}/api/promos/${editId}`
+      : `${import.meta.env.VITE_API_URL}/api/promos`;
 
     const method = editId ? "PUT" : "POST";
 
@@ -78,7 +78,7 @@ export default function AdminPromos() {
   const deletePromo = async (id) => {
     if (!window.confirm("Delete this promo code?")) return;
 
-    await fetch(`http://localhost:5000/api/promos/${id}`, {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/promos/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

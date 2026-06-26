@@ -59,7 +59,7 @@ export default function Shopby() {
   }, [garments]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/garments')
+    fetch(`${import.meta.env.VITE_API_URL}/api/garments`)
       .then((r) => r.json())
       .then((data) => setGarments(data))
       .catch((e) => console.error(e))

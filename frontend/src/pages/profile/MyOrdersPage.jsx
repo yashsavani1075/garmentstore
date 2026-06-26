@@ -16,7 +16,7 @@ export default function MyOrders() {
 
     const token = localStorage.getItem("token");
 
-    fetch(`http://localhost:5000/api/orders/user/${user.email}`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/orders/user/${user.email}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
