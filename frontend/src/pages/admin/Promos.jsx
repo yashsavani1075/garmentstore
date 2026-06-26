@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Promos.css";
 
+
 export default function AdminPromos() {
   const [promos, setPromos] = useState([]);
   const [editId, setEditId] = useState(null);
