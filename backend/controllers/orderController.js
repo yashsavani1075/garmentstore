@@ -65,7 +65,13 @@ exports.createOrder = async (req, res) => {
       `,
     })
       .then(() => console.log("Order confirmation mail sent"))
-      .catch((err) => console.log("Mail sending error:", err.message));
+      .catch((error) => {
+        console.error("========== MAIL ERROR ==========");
+        console.error("Code:", error.code);
+        console.error("Message:", error.message);
+        console.error(error);
+        console.error("================================");
+      });
 
   } catch (err) {
     res.status(500).json({
@@ -132,7 +138,14 @@ exports.updateOrderStatus = async (req, res) => {
       `,
     })
       .then(() => console.log("Order status mail sent"))
-      .catch((err) => console.log("Mail sending error:", err.message));
+      .catch((error) => {
+        console.error("========== MAIL ERROR ==========");
+        console.error("Code:", error.code);
+        console.error("Message:", error.message);
+        console.error(error);
+        console.error("================================");
+      });
+
 
   } catch (err) {
     res.status(500).json({
