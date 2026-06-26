@@ -15,9 +15,11 @@ exports.createOrder = async (req, res) => {
     } = req.body;
 
     const user = await User.findById(req.userId);
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
     const userEmail = user.email;
 
     const calculatedTotal = await calculateTotal(items, promoCode);
@@ -33,7 +35,14 @@ exports.createOrder = async (req, res) => {
       status: "Pending",
     });
 
-    await sendMail({
+    // ✅ Send response immediately
+    res.status(201).json({
+      message: "Order placed successfully",
+      order,
+    });
+
+    // ✅ Send email in background
+    sendMail({
       to: order.userEmail,
       subject: "Your GarmentStore Order is Confirmed",
       html: `
@@ -54,12 +63,10 @@ exports.createOrder = async (req, res) => {
           Phone: ${order.address?.phone || "N/A"}
         </p>
       `,
-    });
+    })
+      .then(() => console.log("Order confirmation mail sent"))
+      .catch((err) => console.log("Mail sending error:", err.message));
 
-    res.status(201).json({
-      message: "Order placed successfully",
-      order,
-    });
   } catch (err) {
     res.status(500).json({
       message: err.message,
@@ -110,7 +117,11 @@ exports.updateOrderStatus = async (req, res) => {
       });
     }
 
-    await sendMail({
+    // ✅ Send response immediately
+    res.json(updatedOrder);
+
+    // ✅ Send status mail in background
+    sendMail({
       to: updatedOrder.userEmail,
       subject: "GarmentStore Order Status Updated",
       html: `
@@ -119,9 +130,10 @@ exports.updateOrderStatus = async (req, res) => {
         <h3>${updatedOrder.status}</h3>
         <p>Total Amount: ₹${updatedOrder.totalAmount}</p>
       `,
-    });
+    })
+      .then(() => console.log("Order status mail sent"))
+      .catch((err) => console.log("Mail sending error:", err.message));
 
-    res.json(updatedOrder);
   } catch (err) {
     res.status(500).json({
       message: err.message,
@@ -132,9 +144,11 @@ exports.updateOrderStatus = async (req, res) => {
 exports.getUserOrders = async (req, res) => {
   try {
     const user = await User.findById(req.userId);
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
     const email = user.email;
 
     const orders = await Order.find({ userEmail: email }).sort({
