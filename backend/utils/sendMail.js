@@ -19,8 +19,12 @@ const sendMail = async ({ to, subject, html }) => {
 
     console.log("Mail sent successfully");
   } catch (error) {
-    console.log("Mail sending error:", error.message);
-  }
+  console.error("========== MAIL ERROR ==========");
+  console.error("Code:", error.code);
+  console.error("Message:", error.message);
+  console.error(error);
+  console.error("================================");
+}
 };
 
 module.exports = sendMail;
