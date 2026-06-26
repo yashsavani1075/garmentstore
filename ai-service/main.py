@@ -1,46 +1,49 @@
+import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
-
-from langchain_groq import ChatGroq
-from langchain_chroma import Chroma
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_core.prompts import ChatPromptTemplate
+import chromadb
+from groq import Groq
 
 load_dotenv()
 
 app = FastAPI()
 
+CHROMA_DIR = "chroma_db"
+COLLECTION_NAME = "garment_store"
+
 class ChatRequest(BaseModel):
     message: str
 
-llm = ChatGroq(
-    model="llama-3.3-70b-versatile",
-    temperature=0
-)
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
-)
-
-vector_db = Chroma(
-    persist_directory="chroma_db",
-    embedding_function=embeddings
-)
+chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
+collection = chroma_client.get_or_create_collection(name=COLLECTION_NAME)
 
 def format_docs(docs):
-    return "\n\n".join(doc.page_content for doc in docs)
+    return "\n\n".join(docs)
+
+@app.get("/")
+def home():
+    return {"message": "AI service running"}
 
 @app.post("/ai/rag")
 def rag(req: ChatRequest):
-    results = vector_db.similarity_search_with_score(req.message, k=8)
+    results = collection.query(
+        query_texts=[req.message],
+        n_results=8
+    )
+
+    docs = results["documents"][0]
+    distances = results["distances"][0]
 
     filtered_docs = []
-    for doc, score in results:
-        print("RAG SCORE:", score)
-        print(doc.page_content[:150])
 
-        if score < 1.2:
+    for doc, distance in zip(docs, distances):
+        print("RAG DISTANCE:", distance)
+        print(doc[:150])
+
+        if distance < 1.2:
             filtered_docs.append(doc)
 
     if not filtered_docs:
@@ -50,7 +53,7 @@ def rag(req: ChatRequest):
 
     context = format_docs(filtered_docs)
 
-    prompt = ChatPromptTemplate.from_template("""
+    prompt = f"""
 You are GarmentStore assistant.
 
 Answer only from the Context.
@@ -64,16 +67,19 @@ Context:
 {context}
 
 Question:
-{question}
+{req.message}
 
 Answer:
-""")
+"""
 
-    response = (prompt | llm).invoke({
-        "context": context,
-        "question": req.message
-    })
+    response = groq_client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        temperature=0,
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
 
     return {
-        "reply": response.content
+        "reply": response.choices[0].message.content
     }
