@@ -30,3 +30,4 @@ coverage/
 
 #ai-service
 venv/
+__pycache__/
