@@ -22,19 +22,16 @@ const wishlistRoutes = require("./routes/wishlistRoutes");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-connectDB();
-createDefaultConfig();
-
 app.use(cors({
   origin: [
     "http://localhost:5173"
   ],
   credentials: true
 }));
+
 app.use(express.json());
 
 app.use("/api/admin/auth", adminAuthRoutes);
-
 app.use("/api/garments", garmentRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/auth", authRoutes);
@@ -47,6 +44,13 @@ app.use("/api/admin/dashboard", dashboardRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+const startServer = async () => {
+  await connectDB();
+  await createDefaultConfig();
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
+
+startServer();
