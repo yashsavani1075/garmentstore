@@ -315,7 +315,7 @@ export default function Checkout() {
                 toast.success("Order placed successfully!");
                 clearCart();
                 reloadCartForUser();
-                navigate("/my-orders");
+                navigate("/profile/orders");
             } else {
                 toast.error("Order creation failed");
             }
