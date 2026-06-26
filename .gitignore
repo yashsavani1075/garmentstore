@@ -29,5 +29,4 @@ Thumbs.db
 coverage/
 
 #ai-service
-chroma_db/
 venv/
