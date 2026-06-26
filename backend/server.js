@@ -24,7 +24,8 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors({
   origin: [
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "https://garmentstore.vercel.app",
     "http://127.0.0.1:5173"
   ],
   credentials: true
