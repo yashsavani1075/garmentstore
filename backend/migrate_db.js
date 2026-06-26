@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
-const uriTest = "mongodb+srv://yashsavani1075_db_user:meet_1234@cluster0.galhaii.mongodb.net/test?appName=Cluster0";
-const uriTarget = "mongodb+srv://yashsavani1075_db_user:meet_1234@cluster0.galhaii.mongodb.net/garmentstore?appName=Cluster0";
+const uriTest = "mongodb+srv://yashsavani1075_db_user:[EMAIL_ADDRESS]/?appName=Cluster0";
+const uriTarget = "mongodb+srv://yashsavani1075_db_user:[EMAIL_ADDRESS]/?appName=Cluster0";
 
 async function run() {
   const connTest = await mongoose.createConnection(uriTest).asPromise();
