@@ -15,7 +15,7 @@ def chunk_text(text, chunk_size=400, overlap=80):
         chunks.append(text[start:end])
         start += chunk_size - overlap
 
-    return chunks
+    return chunks 
 
 if os.path.exists(CHROMA_DIR):
     shutil.rmtree(CHROMA_DIR)

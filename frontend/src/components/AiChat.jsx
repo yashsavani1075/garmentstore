@@ -72,7 +72,7 @@ export default function AiChat() {
                     text: data.reply || "Sorry, I could not understand that.",
                     products:
                         data.action === "VIEW_PRODUCT" ||
-                        data.action === "TRACK_ORDER"
+                            data.action === "TRACK_ORDER"
                             ? []
                             : data.products || [],
                 },
@@ -93,11 +93,11 @@ export default function AiChat() {
 
     const getProductImage = (product) => {
         const img =
-            product.imageUrl ||
-            product.colorVariants?.[0]?.imageUrl;
+            product.matchedColorVariant?.imageUrl ||
+            product.colorVariants?.[0]?.imageUrl ||
+            product.imageUrl;
 
         if (!img) return "https://via.placeholder.com/150";
-
         if (img.startsWith("http")) return img;
 
         return `${import.meta.env.VITE_API_URL}${img}`;

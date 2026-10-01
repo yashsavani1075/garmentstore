@@ -73,7 +73,7 @@ Answer:
 """
 
     response = groq_client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model=os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b"),
         temperature=0,
         messages=[
             {"role": "user", "content": prompt}
@@ -83,3 +83,7 @@ Answer:
     return {
         "reply": response.choices[0].message.content
     }
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

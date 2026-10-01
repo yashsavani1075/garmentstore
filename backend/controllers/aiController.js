@@ -7,24 +7,23 @@ const {
 } = require("../utils/aiProductQueryBuilder");
 
 const RAG_SERVICE_URL =
-  process.env.RAG_SERVICE_URL || "http://localhost:8000/ai/rag";
+  process.env.RAG_SERVICE_URL || "http://127.0.0.1:8000/ai/rag";
 
 async function askPythonRAG(message) {
   try {
     const response = await fetch(RAG_SERVICE_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message }),
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
-      console.log("RAG service error:", data);
-      throw new Error("RAG service failed");
+      const errorText = await response.text();
+      console.log("RAG service error:", response.status, errorText);
+      throw new Error(`RAG service failed with status ${response.status}`);
     }
+
+    const data = await response.json();
 
     return data.reply || "Sorry, I don't have information about that.";
   } catch (error) {
@@ -75,7 +74,6 @@ function hasNewMainProductFilter(newFilters) {
 
 function mergeFiltersSafely(currentFilters, newFilters) {
   const isNewSearch = hasNewMainProductFilter(newFilters);
-
   const base = isNewSearch ? {} : { ...currentFilters };
 
   FILTER_KEYS.forEach((key) => {
@@ -95,7 +93,21 @@ function getDiscountedPrice(price, discount) {
   return Math.round(price - (price * discount) / 100);
 }
 
-function getDisplayColor(product) {
+function getMatchedColorVariant(product, color) {
+  if (!color || !product.colorVariants?.length) return null;
+
+  const requestedColor = color.toLowerCase();
+
+  return product.colorVariants.find((variant) =>
+    variant.colorName?.toLowerCase().includes(requestedColor)
+  );
+}
+
+function getDisplayColor(product, matchedColorVariant) {
+  if (matchedColorVariant?.colorName) {
+    return matchedColorVariant.colorName;
+  }
+
   if (product.colorVariants?.length > 0) {
     const firstVariant = product.colorVariants[0];
 
@@ -111,24 +123,34 @@ function getDisplayColor(product) {
   return product.colorName || product.color || "N/A";
 }
 
-function cleanProducts(products) {
-  return products.map((product) => ({
-    _id: product._id,
-    title: product.title,
-    price: product.price,
-    discount: product.discount || 0,
-    finalPrice: getDiscountedPrice(product.price, product.discount),
-    category: product.category,
-    subCategory: product.subCategory,
-    fabric: product.fabric,
-    color: product.color,
-    colorName: product.colorName || null,
-    displayColor: getDisplayColor(product),
-    colorVariants: product.colorVariants || [],
-    sizes: product.sizes || [],
-    sizePrices: product.sizePrices || [],
-    imageUrl: product.imageUrl,
-  }));
+function cleanProducts(products, filters = {}) {
+  return products.map((product) => {
+    const matchedColorVariant = getMatchedColorVariant(product, filters.color);
+
+    return {
+      _id: product._id,
+      title: product.title,
+      price: product.price,
+      discount: product.discount || 0,
+      finalPrice: getDiscountedPrice(product.price, product.discount),
+
+      category: product.category,
+      subCategory: product.subCategory,
+      fabric: product.fabric,
+
+      color: product.color,
+      colorName: product.colorName || null,
+
+      displayColor: getDisplayColor(product, matchedColorVariant),
+      matchedColorVariant,
+
+      colorVariants: product.colorVariants || [],
+      sizes: product.sizes || [],
+      sizePrices: product.sizePrices || [],
+
+      imageUrl: product.imageUrl,
+    };
+  });
 }
 
 function formatProductReply(products) {
@@ -166,15 +188,19 @@ exports.askAI = async (req, res) => {
 
     const newFilters = await extractFiltersWithAI(message);
 
-    if (newFilters.subCategory && !allowedSubCategories.includes(newFilters.subCategory)) {
+    if (
+      newFilters.subCategory &&
+      !allowedSubCategories.includes(newFilters.subCategory)
+    ) {
       newFilters.subCategory = null;
     }
+
     if (newFilters.intent === "SEARCH_PRODUCTS") {
       newFilters.searchTerm = null;
     }
+
     console.log("USER MESSAGE:", message);
     console.log("AI NEW FILTERS:", newFilters);
-
 
     if (newFilters.intent === "RESET") {
       return res.status(200).json({
@@ -267,7 +293,7 @@ exports.askAI = async (req, res) => {
       .limit(8)
       .lean();
 
-    const products = cleanProducts(productsFromDB);
+    const products = cleanProducts(productsFromDB, filters);
     const reply = formatProductReply(products);
 
     return res.status(200).json({
@@ -298,7 +324,7 @@ exports.getChatSuggestions = async (req, res) => {
         "What is your return policy?",
         "How do I choose the right size?",
         "Which fabric is best for summer?",
-        "Show sarees on discount",
+        "Show red sarees",
         "Open first product",
         "Track my order",
       ],

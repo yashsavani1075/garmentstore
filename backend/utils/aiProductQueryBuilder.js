@@ -26,10 +26,7 @@ function buildMongoQuery(filters = {}) {
 
     query.$and = query.$and || [];
     query.$and.push({
-      $or: [
-        { sizes: sizeRegex },
-        { "sizePrices.size": sizeRegex },
-      ],
+      $or: [{ sizes: sizeRegex }, { "sizePrices.size": sizeRegex }],
     });
   }
 
@@ -44,11 +41,8 @@ function buildMongoQuery(filters = {}) {
       { "colorVariants.colorCode": colorRegex },
     ];
 
-    if (query.$and) {
-      query.$and.push({ $or: colorConditions });
-    } else {
-      query.$or = colorConditions;
-    }
+    query.$and = query.$and || [];
+    query.$and.push({ $or: colorConditions });
   }
 
   if (filters.searchTerm) {
@@ -61,15 +55,8 @@ function buildMongoQuery(filters = {}) {
       { fabric: searchRegex },
     ];
 
-    if (query.$or) {
-      query.$and = query.$and || [];
-      query.$and.push({ $or: query.$or });
-      query.$and.push({ $or: searchConditions });
-      delete query.$or;
-    } else {
-      query.$and = query.$and || [];
-      query.$and.push({ $or: searchConditions });
-    }
+    query.$and = query.$and || [];
+    query.$and.push({ $or: searchConditions });
   }
 
   if (filters.minPrice || filters.maxPrice) {
